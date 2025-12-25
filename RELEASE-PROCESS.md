@@ -30,7 +30,7 @@ git checkout main
 git pull origin main
 
 # Create release branch
-git checkout -b release/v2.0.0
+git checkout -b release/vX.Y.Z
 ```
 
 ### Step 2: Prepare Release
