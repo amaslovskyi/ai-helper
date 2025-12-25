@@ -259,7 +259,7 @@ source ~/.zshrc
 
 **Install:**
 ```bash
-git clone https://github.com/yourusername/ai-helper.git
+git clone https://github.com/amaslovskyi/ai-helper.git
 cd ai-helper
 make install
 echo 'source ~/.ai/ai-helper.zsh' >> ~/.zshrc
@@ -306,9 +306,9 @@ We use [Semantic Versioning](https://semver.org/):
 
 ## Links
 
-- **Repository:** https://github.com/yourusername/ai-helper
-- **Issues:** https://github.com/yourusername/ai-helper/issues
-- **Discussions:** https://github.com/yourusername/ai-helper/discussions
+- **Repository:** https://github.com/amaslovskyi/ai-helper
+- **Issues:** https://github.com/amaslovskyi/ai-helper/issues
+- **Discussions:** https://github.com/amaslovskyi/ai-helper/discussions
 - **Documentation:** [README.md](README.md)
 - **Quick Start:** [QUICKSTART.md](QUICKSTART.md)
 - **Roadmap:** [ROADMAP.md](ROADMAP.md)

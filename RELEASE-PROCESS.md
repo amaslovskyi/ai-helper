@@ -74,7 +74,7 @@ git push origin release/v2.0.0
 
 ### Step 5: Create Pull Request
 
-1. Go to: https://github.com/yourusername/ai-helper/compare
+1. Go to: https://github.com/amaslovskyi/ai-helper/compare
 2. **Base:** `main`
 3. **Compare:** `release/v2.0.0`
 4. **Title:** `Release v2.0.0`
@@ -163,12 +163,12 @@ git push origin v2.0.0
 4. Upload binaries and checksums
 
 **Monitor the workflow:**
-- Go to: https://github.com/yourusername/ai-helper/actions
+- Go to: https://github.com/amaslovskyi/ai-helper/actions
 - Watch the "Release" workflow
 
 ### Step 9: Verify Release
 
-1. Go to: https://github.com/yourusername/ai-helper/releases
+1. Go to: https://github.com/amaslovskyi/ai-helper/releases
 2. Verify release `v2.0.0` is published
 3. Check all binaries are uploaded:
    - `ai-helper-darwin-amd64`
@@ -181,13 +181,13 @@ git push origin v2.0.0
 
 ```bash
 # Test macOS Intel binary
-curl -L -o ai-helper https://github.com/yourusername/ai-helper/releases/download/v2.0.0/ai-helper-darwin-amd64
+curl -L -o ai-helper https://github.com/amaslovskyi/ai-helper/releases/download/v2.0.0/ai-helper-darwin-amd64
 chmod +x ai-helper
 ./ai-helper version
 # Should output: AI Terminal Helper 2.0.0-go
 
 # Test macOS Apple Silicon binary
-curl -L -o ai-helper https://github.com/yourusername/ai-helper/releases/download/v2.0.0/ai-helper-darwin-arm64
+curl -L -o ai-helper https://github.com/amaslovskyi/ai-helper/releases/download/v2.0.0/ai-helper-darwin-arm64
 chmod +x ai-helper
 ./ai-helper version
 ```
@@ -207,7 +207,7 @@ Perfect for DevOps/SRE/MLOps!
 
 #golang #devops #ai #terminal #opensource
 
-https://github.com/yourusername/ai-helper/releases/tag/v2.0.0
+https://github.com/amaslovskyi/ai-helper/releases/tag/v2.0.0
 ```
 
 **Reddit (r/devops, r/golang, r/commandline):**

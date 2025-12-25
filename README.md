@@ -2,7 +2,7 @@
 
 **Local, fast, hallucination-preventing AI assistant for DevOps/SRE/MLOps**
 
-[![Version](https://img.shields.io/badge/version-2.0.0--go-blue.svg)](https://github.com/yourusername/ai-helper)
+[![Version](https://img.shields.io/badge/version-2.0.0--go-blue.svg)](https://github.com/amaslovskyi/ai-helper)
 [![Go](https://img.shields.io/badge/go-1.21+-00ADD8.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -205,7 +205,7 @@ make build-all      # Cross-compile for all platforms
 // 1. Create pkg/validators/yourtool/yourtool.go
 package yourtool
 
-import "github.com/yourusername/ai-helper/pkg/validators"
+import "github.com/amaslovskyi/ai-helper/pkg/validators"
 
 type Validator struct{}
 
@@ -354,6 +354,6 @@ MIT License - See [LICENSE](LICENSE) for details.
 - 📖 [Migration Guide](GO-MIGRATION-GUIDE.md)
 - 🗺️ [Roadmap](ROADMAP.md)
 - 📊 [Summary](SUMMARY.md)
-- 🐛 [Report Bug](https://github.com/yourusername/ai-helper/issues)
-- 💡 [Request Feature](https://github.com/yourusername/ai-helper/issues)
+- 🐛 [Report Bug](https://github.com/amaslovskyi/ai-helper/issues)
+- 💡 [Request Feature](https://github.com/amaslovskyi/ai-helper/issues)
 
