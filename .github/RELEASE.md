@@ -322,6 +322,7 @@ ai-helper version  # Should show 2.1.0-go
 
 ## 🙏 Acknowledgments
 
+- **Author:** [Andrii Maslovskyi](https://github.com/amaslovskyi)
 - Built with [Ollama](https://ollama.ai) for local LLM inference
 - Oh My Zsh community for git plugin inspiration
 - Go community for excellent tooling
@@ -367,4 +368,4 @@ v2.1.0 transforms the AI Terminal Helper from a **good tool** into a **productio
 
 ---
 
-**Built with ❤️ in Go. Your AI helper now speaks your language!** 🚀
+**Built with ❤️ by [Andrii Maslovskyi](https://github.com/amaslovskyi). Your AI helper now speaks your language!** 🚀

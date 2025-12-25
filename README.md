@@ -371,6 +371,7 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 ## 🙏 Acknowledgments
 
+- **Author:** [Andrii Maslovskyi](https://github.com/amaslovskyi)
 - Built with [Ollama](https://ollama.ai) for local LLM inference
 - Inspired by Warp Terminal's AI features
 - Designed for DevOps/SRE/MLOps professionals
@@ -387,7 +388,7 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-**Built with ❤️ in Go. No more hallucinations!** 🚀
+**Built with ❤️ by [Andrii Maslovskyi](https://github.com/amaslovskyi). No more hallucinations!** 🚀
 
 ---
 

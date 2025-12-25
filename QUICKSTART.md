@@ -541,4 +541,4 @@ rm -rf ~/.ai/
 
 ---
 
-**Built with ❤️ in Go. No more hallucinations!** 🚀
+**Built with ❤️ by [Andrii Maslovskyi](https://github.com/amaslovskyi). No more hallucinations!** 🚀
