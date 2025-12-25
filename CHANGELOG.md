@@ -9,6 +9,111 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2025-12-25
+
+### 🎯 Major Feature: Interactive Mode
+
+#### ✨ Added
+
+**Interactive Mode** - Full control over AI activation
+- **4 Activation Modes:**
+  - `auto` - AI triggers automatically on failures (default)
+  - `interactive` - Show menu, user chooses action (NEW!)
+  - `manual` - AI only with explicit commands
+  - `disabled` - Turn off AI completely
+
+**Interactive Menu** (shown when mode is `interactive`):
+- [1] Get AI suggestion - Analyze and suggest fix
+- [2] Show manual - Display man page tip
+- [3] Skip - Continue without fixing
+- [4] Disable AI for session - Temporary disable
+
+**Configuration System:**
+- New package: `pkg/config/` - Configuration management
+- New package: `pkg/interactive/` - Interactive menu UI
+- Config file: `~/.ai/config.json` (auto-created)
+- Per-tool mode overrides (e.g., `kubectl: interactive`, `docker: auto`)
+- Session-level temporary disabling
+
+**New Commands:**
+- `ai-helper config-show` - Display current configuration
+- `ai-helper config-set <key> <value>` - Update settings
+- `ai-helper config-reset` - Reset to defaults
+
+**Configuration Options:**
+```bash
+# Set global mode
+ai-helper config-set mode interactive
+
+# Set per-tool mode
+ai-helper config-set tool-mode kubectl interactive
+
+# Toggle confidence display
+ai-helper config-set confidence true|false
+```
+
+#### 🛠️ Changed
+
+**Simplified ZSH Welcome Message:**
+- Removed version number from startup
+- Removed "What's new" section
+- Removed feature list
+- Clean, minimal output (5 lines vs 18 lines)
+
+**Removed Conflicting Aliases:**
+- Removed `h` alias (conflicts with shell history)
+- Removed `d` and `dc` aliases (common conflicts)
+- Use full command names: `helm`, `docker`, `docker-compose`
+
+**Version Update:**
+- Updated from v2.1.0 to v2.3.0
+- Cleaner version string (removed `-go` suffix)
+
+#### 📚 Documentation
+
+**New Documentation:**
+- `docs/INTERACTIVE-MODE.md` - Comprehensive 430-line guide
+- Usage examples for all 4 modes
+- Configuration reference
+- Use cases & best practices
+- Troubleshooting guide
+
+**Updated Documentation:**
+- `README.md` - Added Interactive Mode section
+- `ROADMAP.md` - Updated feature status
+
+#### 📊 Statistics
+
+**New Code:**
+- `pkg/config/config.go` - 150 lines
+- `pkg/interactive/menu.go` - 171 lines
+- Integration in `main.go` - ~120 lines
+- **Total:** ~440 lines of production-ready code
+
+**Code Reduction:**
+- Removed sudo option from menu
+- Simplified welcome message
+- Net addition: ~420 lines
+
+#### 🎯 Benefits
+
+**User Control:**
+- Choose when AI helps (not forced)
+- Per-tool customization
+- Production-safe workflows
+
+**Simplicity:**
+- 4 clear menu options
+- Fast decision making
+- No bloat or over-engineering
+
+**Privacy:**
+- 100% local configuration
+- No telemetry
+- Offline-first
+
+---
+
 ## [2.1.0] - 2025-12-25
 
 ### ✨ Added

@@ -76,11 +76,15 @@ ask() {
   ai-helper proactive "$*"
 }
 
-# Quick helpers
+# Tool-specific helpers
 kask() { ai-helper proactive "kubernetes: $*"; }
 dask() { ai-helper proactive "docker: $*"; }
 task() { ai-helper proactive "terraform: $*"; }
 gask() { ai-helper proactive "git: $*"; }
+hask() { ai-helper proactive "helm: $*"; }
+tgask() { ai-helper proactive "terragrunt: $*"; }
+aask() { ai-helper proactive "ansible: $*"; }
+arask() { ai-helper proactive "argocd: $*"; }
 
 # Hotkeys
 bindkey -s '^[a' 'ai\n'
@@ -92,21 +96,15 @@ alias ai-clear='ai-helper cache-clear'
 alias ai-version='ai-helper version'
 
 # Welcome message
-echo -e "\033[1;32m✅ AI Terminal Helper v2.1 (Go) Loaded!\033[0m"
+echo -e "\033[1;32m✅ AI Terminal Helper Loaded\033[0m"
 echo ""
-echo -e "\033[1;36mQuick Commands:\033[0m"
+echo -e "\033[1;36mCommands:\033[0m"
 echo -e "  \033[0;32mai\033[0m          - Re-analyze last failed command"
 echo -e "  \033[0;32mask\033[0m \033[0;33m<query>\033[0m - Generate command from natural language"
-echo -e "  \033[0;32mkask\033[0m/\033[0;32mdask\033[0m/\033[0;32mtask\033[0m/\033[0;32mgask\033[0m - Tool-specific queries"
 echo ""
-echo -e "\033[1;36mNew in v2.1:\033[0m"
-echo -e "  🎯 8 validators (kubectl, terraform, git, helm, terragrunt, ansible, argocd, docker)"
-echo -e "  🔤 50+ alias support (k, tf, tg, h, gco, gp, etc.)"
-echo -e "  📊 Confidence scoring (High/Medium/Low)"
-echo ""
-echo -e "\033[1;36mFeatures:\033[0m"
-echo -e "  🔒 Security scanning    ⏱️  Smart rate limiting"
-echo -e "  ✅ Command validation   💾 Offline caching"
-echo -e "  🚀 Fast Go binary       🎯 Fixes hallucinations"
+echo -e "\033[1;36mTool-specific:\033[0m"
+echo -e "  \033[0;32mkask\033[0m  - kubectl  \033[0;32mdask\033[0m  - docker   \033[0;32mtask\033[0m  - terraform"
+echo -e "  \033[0;32mgask\033[0m  - git      \033[0;32mhask\033[0m  - helm     \033[0;32mtgask\033[0m - terragrunt"
+echo -e "  \033[0;32maask\033[0m  - ansible  \033[0;32marask\033[0m - argocd"
 echo ""
 
