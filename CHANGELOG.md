@@ -269,7 +269,6 @@ source ~/.zshrc
 ### 🙏 Acknowledgments
 
 - Built with [Ollama](https://ollama.ai) for local LLM inference
-- Inspired by Warp Terminal's AI features
 - Designed for DevOps/SRE/MLOps professionals
 
 ---

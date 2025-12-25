@@ -201,23 +201,21 @@ $ ask how do I create a virtual environment
 
 ---
 
-## 🆚 Comparison: AI Helper v2.0 vs Warp Terminal
+## 🌟 Key Features & Benefits
 
-| Feature | AI Helper v2.0 | Warp Terminal |
-|---------|---------------|---------------|
-| **Privacy** | ✅ 100% local | ❌ Cloud-based |
-| **Cost** | ✅ Free | ❌ $10-20/mo |
-| **Proactive Mode** | ✅ Yes | ✅ Yes |
-| **Security Scanning** | ✅ Yes | ❌ No |
-| **Offline Cache** | ✅ Yes | ⚠️ Limited |
-| **Rate Limiting** | ✅ Yes | ❌ No |
-| **Secrets Safe** | ✅ Yes | ❌ No |
-| **Air-gapped** | ✅ Yes | ❌ No |
-| **SOC2/HIPAA Safe** | ✅ Yes | ❌ No |
-| **Speed (cached)** | ✅ 0.05s | ⚠️ Network latency |
-| **Speed (AI call)** | ✅ 0.3-2.5s | ⚠️ 1-5s+ |
-
-**Verdict:** AI Helper v2.0 is better for security, privacy, cost, and speed. Warp is better for UI/UX polish.
+| Feature | Capability |
+|---------|------------|
+| **Privacy** | ✅ 100% local |
+| **Cost** | ✅ Free |
+| **Proactive Mode** | ✅ Yes |
+| **Security Scanning** | ✅ Yes |
+| **Offline Cache** | ✅ Yes |
+| **Rate Limiting** | ✅ Yes |
+| **Secrets Safe** | ✅ Yes |
+| **Air-gapped** | ✅ Yes |
+| **SOC2/HIPAA Safe** | ✅ Yes |
+| **Speed (cached)** | ✅ 0.05s |
+| **Speed (AI call)** | ✅ 0.3-2.5s |
 
 ---
 
