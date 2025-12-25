@@ -74,12 +74,17 @@ func main() {
 		handleAnalyze(client, cacheStore, scanner, validatorsList)
 	case "proactive", "ask":
 		handleProactive(client, scanner, validatorsList)
-	case "version":
+	case "version", "-v", "--version", "-V":
+		// Support common version flag conventions
 		fmt.Printf("AI Terminal Helper v%s (Go)\n", version)
 	case "cache-stats":
 		handleCacheStats(cacheStore)
 	case "cache-clear":
 		handleCacheClear(cacheStore)
+	case "-h", "--help", "help":
+		// Support common help flag conventions
+		printUsage()
+		os.Exit(0)
 	default:
 		ui.PrintError(fmt.Sprintf("Unknown command: %s", cmd))
 		printUsage()
@@ -302,7 +307,8 @@ Usage:
   ai-helper proactive <query>
   ai-helper cache-stats
   ai-helper cache-clear
-  ai-helper version
+  ai-helper version | -v | --version
+  ai-helper help | -h | --help
 
 Examples:
   ai-helper analyze "kubectl get pods" 127 "command not found"
