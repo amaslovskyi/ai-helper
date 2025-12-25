@@ -19,17 +19,14 @@ func NewAliasMapper() *AliasMapper {
 			// Terraform
 			"tf": "terraform",
 
-			// Terragrunt
-			"tg": "terragrunt",
+		// Terragrunt
+		"tg": "terragrunt",
 
-			// Helm
-			"h": "helm",
+		// Helm - removed "h" alias due to conflict with shell history command
 
-			// Docker
-			"d":  "docker",
-			"dc": "docker-compose",
+		// Docker - removed "d" and "dc" aliases due to common conflicts
 
-			// Oh My Zsh Git Aliases (most common ones)
+		// Oh My Zsh Git Aliases (most common ones)
 			// Checkout
 			"gco":  "git checkout",
 			"gcb":  "git checkout -b",

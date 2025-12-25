@@ -315,17 +315,16 @@ See [ROADMAP.md](ROADMAP.md) for details.
 
 ---
 
-## 🆚 Comparison
+## 🌟 Key Features
 
-### vs Warp Terminal
-| Feature           | AI Helper (Go) | Warp Terminal |
-| ----------------- | -------------- | ------------- |
-| Privacy           | ✅ 100% local   | ❌ Cloud-based |
-| Cost              | ✅ Free         | ❌ $10-20/mo   |
-| Validation        | ✅ Yes          | ❌ No          |
-| Security Scanning | ✅ Yes          | ❌ No          |
-| Air-gapped        | ✅ Yes          | ❌ No          |
-| Speed             | ✅ 0.3-2.5s     | ⚠️ 1-5s+       |
+| Feature           | Capability   |
+| ----------------- | ------------ |
+| Privacy           | ✅ 100% local |
+| Cost              | ✅ Free       |
+| Validation        | ✅ Yes        |
+| Security Scanning | ✅ Yes        |
+| Air-gapped        | ✅ Yes        |
+| Speed             | ✅ 0.3-2.5s   |
 
 ### vs Bash Version
 | Feature      | Go Binary       | Bash Scripts |
@@ -373,7 +372,6 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 - **Author:** [Andrii Maslovskyi](https://github.com/amaslovskyi)
 - Built with [Ollama](https://ollama.ai) for local LLM inference
-- Inspired by Warp Terminal's AI features
 - Designed for DevOps/SRE/MLOps professionals
 
 ---

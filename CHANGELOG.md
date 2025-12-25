@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Warns on EXTREMELY dangerous `run-all destroy` operations
   - Detects incorrect flags (--all-modules, --recurse)
   - Suggests proper Terragrunt-specific flags (--terragrunt-non-interactive)
-- **helm Validator** - Validates Helm commands (supports `h` alias)
+- **helm Validator** - Validates Helm commands
   - Detects Helm 2 vs Helm 3 differences (`delete` → `uninstall`)
   - Validates install/upgrade/uninstall commands
   - Warns on missing namespace in Helm 3
@@ -56,8 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - kubectl: `k` → `kubectl`
   - terraform: `tf` → `terraform`
   - terragrunt: `tg` → `terragrunt`
-  - helm: `h` → `helm`
-  - docker: `d` → `docker`, `dc` → `docker-compose`
   - **Oh My Zsh Git Plugin** - Full compatibility with git plugin aliases:
     - Checkout: `gco`, `gcb`, `gcm`, `gcd`, `gcmg`
     - Add/Commit: `ga`, `gaa`, `gc`, `gcmsg`, `gca`, `gcam`
@@ -93,6 +91,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - New `pkg/validators/argocd/` package (125 lines)
   - New `pkg/validators/aliases.go` (alias resolution system)
   - Enhanced `pkg/llm/confidence.go` (confidence scoring)
+- **Removed Conflicting Aliases** - To avoid shell command conflicts
+  - Removed `h` alias (conflicts with shell history)
+  - Removed `d` and `dc` aliases (common conflicts)
+  - Use full command names: `helm`, `docker`, `docker-compose`
 
 ### 📊 Stats
 - **Total New Code**: ~1,400 lines
@@ -269,7 +271,6 @@ source ~/.zshrc
 ### 🙏 Acknowledgments
 
 - Built with [Ollama](https://ollama.ai) for local LLM inference
-- Inspired by Warp Terminal's AI features
 - Designed for DevOps/SRE/MLOps professionals
 
 ---

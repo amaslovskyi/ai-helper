@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🎉 Major Release: Complete Overhaul
 
-This is a **major** release that brings AI Terminal Helper to feature parity with Warp Terminal while maintaining 100% privacy, security, and local execution.
+This is a **major** release that brings comprehensive AI assistance capabilities while maintaining 100% privacy, security, and local execution.
 
 ### ✨ Added
 
@@ -99,19 +99,19 @@ This is a **major** release that brings AI Terminal Helper to feature parity wit
 - Safe for secrets (AWS keys, k8s tokens, DB passwords)
 - Production-safe for regulated environments (SOC2, HIPAA, PCI-DSS)
 
-### 🆚 Competitive Position
+### 🌟 Key Capabilities
 
-AI Helper v2.0 now **matches or exceeds** Warp Terminal on key features:
+AI Helper v2.0 delivers comprehensive features:
 
-| Feature | AI Helper v2.0 | Warp Terminal |
-|---------|---------------|---------------|
-| Proactive Mode | ✅ Yes | ✅ Yes |
-| Error Fixing | ✅ Yes | ✅ Yes |
-| Privacy | ✅ 100% local | ❌ Cloud |
-| Cost | ✅ Free | ❌ Paid |
-| Security Scanning | ✅ Yes | ❌ No |
-| Caching | ✅ Yes | ⚠️ Limited |
-| Secrets Safe | ✅ Yes | ❌ No |
+| Feature | Status |
+|---------|--------|
+| Proactive Mode | ✅ Yes |
+| Error Fixing | ✅ Yes |
+| Privacy | ✅ 100% local |
+| Cost | ✅ Free |
+| Security Scanning | ✅ Yes |
+| Caching | ✅ Yes |
+| Secrets Safe | ✅ Yes |
 
 ### 📝 Migration Guide
 
