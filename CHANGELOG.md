@@ -7,6 +7,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+## [2.1.0] - TBD
+
+### ✨ Added
+
+#### Command Validators
+- **kubectl Validator** - Validates Kubernetes commands and YAML syntax
+  - Detects invalid kubectl flags and subcommands
+  - Validates YAML manifests before suggestions
+  - Catches common kubectl mistakes (wrong API versions, invalid fields)
+  - Example: Catches `kubectl get pods --invalid-flag`
+- **Terraform Validator** - Validates Terraform commands and HCL syntax
+  - Validates terraform subcommands and flags
+  - Checks HCL syntax in suggestions
+  - Detects common terraform mistakes
+  - Example: Catches `terraform plan --invalid-option`
+- **Git Validator** - Validates Git commands
+  - Validates git subcommands and flags
+  - Catches unsafe operations (force push to main/master)
+  - Suggests safer alternatives
+  - Example: Warns on `git push --force origin main`
+
+#### Multi-Model Ensemble (Experimental)
+- **Confidence Scoring** - Assigns confidence levels to AI suggestions
+  - High confidence (90%+): Direct execution recommended
+  - Medium confidence (70-90%): Review before execution
+  - Low confidence (<70%): Manual verification required
+- **Multi-Model Validation** - Query multiple models for critical commands
+  - Dangerous commands validated by 2-3 models
+  - Consensus voting for final suggestion
+  - Prevents AI hallucinations on destructive operations
+
+#### Interactive Mode
+- **Step-by-Step Confirmation** - Review suggestions before auto-execution
+  - Shows command, root cause, and tip
+  - Prompts: Execute / Edit / Skip / Explain
+  - Safety for learning users
+
+### 🚀 Performance Improvements
+- **Validator Caching** - Cache validation results for faster responses
+- **Parallel Model Queries** - Query multiple models in parallel for ensemble mode
+
+### 🛠️ Changed
+- **Validator Architecture** - Refactored for easier extension
+  - New `pkg/validators/kubectl/` package
+  - New `pkg/validators/terraform/` package
+  - New `pkg/validators/git/` package
+
+### 🐛 Fixed
+- Docker validator edge cases
+- Cache corruption on concurrent writes
+- Rate limiter not resetting correctly
+
+### 📚 Documentation
+- Updated QUICKSTART.md with validator examples
+- Added validator development guide to README
+- Updated ROADMAP.md with v2.2 plans
+
+---
+
 ## [2.0.0] - 2025-12-25
 
 ### 🎉 Major Release: Complete Go Rewrite
@@ -80,7 +141,6 @@ This is a **complete rewrite** from bash scripts to Go, providing significant im
   - `README.md` - Main documentation with feature highlights
   - `QUICKSTART.md` - 5-minute setup guide
   - `ROADMAP.md` - Future plans and feature matrix
-  - `GO-MIGRATION-GUIDE.md` - Migration guide from bash
   - `bash/README.md` - Archive notice for bash version
 
 ### 🚀 Performance Improvements
@@ -123,19 +183,19 @@ This is a **complete rewrite** from bash scripts to Go, providing significant im
 
 ### 📊 Comparison: Go vs Bash
 
-| Aspect | Go Binary | Bash Scripts |
-|--------|-----------|--------------|
-| **Hallucination Prevention** | ✅ Yes | ❌ No |
-| **Performance** | ✅ 10x faster | ⚠️ Slow |
-| **Distribution** | ✅ Single 5.5MB binary | ⚠️ 5 files |
-| **Testing** | ✅ Easy (`go test`) | ❌ Difficult |
-| **Parsing** | ✅ Real parsers | ❌ Regex only |
-| **Type Safety** | ✅ Compile-time | ❌ Runtime |
-| **Maintainability** | ✅ Clean architecture | ⚠️ Complex bash |
+| Aspect                       | Go Binary             | Bash Scripts   |
+| ---------------------------- | --------------------- | -------------- |
+| **Hallucination Prevention** | ✅ Yes                 | ❌ No           |
+| **Performance**              | ✅ 10x faster          | ⚠️ Slow         |
+| **Distribution**             | ✅ Single 5.5MB binary | ⚠️ 5 files      |
+| **Testing**                  | ✅ Easy (`go test`)    | ❌ Difficult    |
+| **Parsing**                  | ✅ Real parsers        | ❌ Regex only   |
+| **Type Safety**              | ✅ Compile-time        | ❌ Runtime      |
+| **Maintainability**          | ✅ Clean architecture  | ⚠️ Complex bash |
 
 ### 🔄 Migration from Bash
 
-See [GO-MIGRATION-GUIDE.md](GO-MIGRATION-GUIDE.md) for detailed migration instructions.
+See `bash/README.md` for bash version archive.
 
 **Quick Migration:**
 ```bash
@@ -176,7 +236,6 @@ source ~/.zshrc
 ### Initial Release (Bash Implementation)
 
 The original bash implementation has been archived to `bash/` folder.
-See `bash/CHANGELOG-bash.md` for bash version history.
 
 **Key Features (Bash):**
 - Reactive mode (automatic error fixing)
@@ -214,4 +273,3 @@ We use [Semantic Versioning](https://semver.org/):
 ---
 
 **Built with ❤️ in Go. No more hallucinations!** 🚀
-
