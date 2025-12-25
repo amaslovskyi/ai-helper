@@ -13,10 +13,14 @@ import (
 	"github.com/yourusername/ai-helper/pkg/security"
 	"github.com/yourusername/ai-helper/pkg/ui"
 	"github.com/yourusername/ai-helper/pkg/validators"
+	"github.com/yourusername/ai-helper/pkg/validators/ansible"
+	"github.com/yourusername/ai-helper/pkg/validators/argocd"
 	"github.com/yourusername/ai-helper/pkg/validators/docker"
 	"github.com/yourusername/ai-helper/pkg/validators/git"
+	"github.com/yourusername/ai-helper/pkg/validators/helm"
 	"github.com/yourusername/ai-helper/pkg/validators/kubectl"
 	"github.com/yourusername/ai-helper/pkg/validators/terraform"
+	"github.com/yourusername/ai-helper/pkg/validators/terragrunt"
 )
 
 const version = "2.1.0-go"
@@ -50,12 +54,16 @@ func main() {
 	// Create security scanner
 	scanner := security.NewScanner()
 
-	// Create validators
+	// Create validators (order matters: more specific first)
 	validatorsList := []validators.Validator{
-		docker.NewValidator(),
-		kubectl.NewValidator(),
-		terraform.NewValidator(),
-		git.NewValidator(),
+		kubectl.NewValidator(),      // k, kubectl
+		terraform.NewValidator(),    // tf, terraform
+		terragrunt.NewValidator(),   // tg, terragrunt
+		helm.NewValidator(),         // h, helm
+		git.NewValidator(),          // git, gco, gcb, gp, etc.
+		docker.NewValidator(),       // docker, d, dc
+		ansible.NewValidator(),      // ansible, ansible-playbook
+		argocd.NewValidator(),       // argocd
 	}
 
 	// Parse command

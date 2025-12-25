@@ -32,11 +32,16 @@ func NewValidator() *Validator {
 
 // CanValidate returns true if this validator can handle the command.
 func (v *Validator) CanValidate(command string) bool {
-	return strings.HasPrefix(command, "kubectl")
+	return strings.HasPrefix(command, "kubectl") || strings.HasPrefix(command, "k ")
 }
 
 // Validate checks if a kubectl command is valid.
 func (v *Validator) Validate(command string) error {
+	// Handle alias 'k' for 'kubectl'
+	if strings.HasPrefix(command, "k ") {
+		command = "kubectl" + command[1:]
+	}
+	
 	if !strings.HasPrefix(command, "kubectl") {
 		return nil // Not a kubectl command
 	}

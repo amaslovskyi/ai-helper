@@ -72,11 +72,35 @@ func NewValidator() *Validator {
 
 // CanValidate returns true if this validator can handle the command.
 func (v *Validator) CanValidate(command string) bool {
-	return strings.HasPrefix(command, "git")
+	// Check for git or Oh My Zsh git aliases
+	if strings.HasPrefix(command, "git") {
+		return true
+	}
+	
+	// Common Oh My Zsh git aliases
+	gitAliases := []string{
+		"gco", "gcb", "gcm", "gcd", "gcmg", "ga", "gaa", "gc", "gc!", "gcmsg",
+		"gca", "gca!", "gcam", "gb", "gba", "gbd", "gbD", "gst", "gss", "gd",
+		"gdca", "gp", "gpf", "gpf!", "gl", "ggl", "ggp", "gf", "gfa", "glog",
+		"glol", "glola", "gm", "grb", "grbi", "grbc", "grba", "gsta", "gstp",
+		"gstl", "gr", "gra", "grv", "grmv", "grrm", "gcl", "grh", "grhh", "gclean",
+	}
+	
+	firstWord := strings.Fields(command)[0]
+	for _, alias := range gitAliases {
+		if firstWord == alias {
+			return true
+		}
+	}
+	
+	return false
 }
 
 // Validate checks if a git command is valid.
 func (v *Validator) Validate(command string) error {
+	// Resolve Oh My Zsh aliases to git commands
+	command = v.resolveGitAlias(command)
+	
 	if !strings.HasPrefix(command, "git") {
 		return nil // Not a git command
 	}
@@ -163,5 +187,76 @@ func (v *Validator) checkDangerousOps(command string) error {
 		}
 	}
 	return nil
+}
+
+// resolveGitAlias converts Oh My Zsh git aliases to full git commands.
+func (v *Validator) resolveGitAlias(command string) string {
+	aliases := map[string]string{
+		"gco":  "git checkout",
+		"gcb":  "git checkout -b",
+		"gcm":  "git checkout master",
+		"gcd":  "git checkout develop",
+		"gcmg": "git checkout main",
+		"ga":    "git add",
+		"gaa":   "git add --all",
+		"gc":    "git commit -v",
+		"gc!":   "git commit -v --amend",
+		"gcmsg": "git commit -m",
+		"gca":   "git commit -v -a",
+		"gca!":  "git commit -v -a --amend",
+		"gcam":  "git commit -a -m",
+		"gb":  "git branch",
+		"gba": "git branch -a",
+		"gbd": "git branch -d",
+		"gbD": "git branch -D",
+		"gst":  "git status",
+		"gss":  "git status -s",
+		"gd":   "git diff",
+		"gdca": "git diff --cached",
+		"gp":   "git push",
+		"gpf":  "git push --force",
+		"gpf!": "git push --force",
+		"gl":   "git pull",
+		"ggl":  "git pull origin",
+		"ggp":  "git push origin",
+		"gf":   "git fetch",
+		"gfa":  "git fetch --all",
+		"glog":  "git log --oneline --decorate",
+		"glol":  "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'",
+		"glola": "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all",
+		"gm":   "git merge",
+		"grb":  "git rebase",
+		"grbi": "git rebase -i",
+		"grbc": "git rebase --continue",
+		"grba": "git rebase --abort",
+		"gsta": "git stash",
+		"gstp": "git stash pop",
+		"gstl": "git stash list",
+		"gr":   "git remote",
+		"gra":  "git remote add",
+		"grv":  "git remote -v",
+		"grmv": "git remote rename",
+		"grrm": "git remote remove",
+		"gcl": "git clone",
+		"grh":   "git reset",
+		"grhh":  "git reset --hard",
+		"gclean": "git clean -fd",
+	}
+	
+	parts := strings.Fields(command)
+	if len(parts) == 0 {
+		return command
+	}
+	
+	firstWord := parts[0]
+	if fullCmd, exists := aliases[firstWord]; exists {
+		remaining := ""
+		if len(parts) > 1 {
+			remaining = " " + strings.Join(parts[1:], " ")
+		}
+		return fullCmd + remaining
+	}
+	
+	return command
 }
 

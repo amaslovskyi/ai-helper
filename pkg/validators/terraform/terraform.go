@@ -29,11 +29,16 @@ func NewValidator() *Validator {
 
 // CanValidate returns true if this validator can handle the command.
 func (v *Validator) CanValidate(command string) bool {
-	return strings.HasPrefix(command, "terraform")
+	return strings.HasPrefix(command, "terraform") || strings.HasPrefix(command, "tf ")
 }
 
 // Validate checks if a terraform command is valid.
 func (v *Validator) Validate(command string) error {
+	// Handle alias 'tf' for 'terraform'
+	if strings.HasPrefix(command, "tf ") {
+		command = "terraform" + command[2:]
+	}
+	
 	if !strings.HasPrefix(command, "terraform") {
 		return nil // Not a terraform command
 	}
