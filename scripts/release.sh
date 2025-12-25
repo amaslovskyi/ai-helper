@@ -22,15 +22,13 @@ fi
 echo -e "${BLUE}🚀 Preparing release v${VERSION}${RESET}"
 echo ""
 
-# Verify we're on main/master branch
+# Verify we're on a release branch
 CURRENT_BRANCH=$(git branch --show-current)
-if [[ "$CURRENT_BRANCH" != "main" && "$CURRENT_BRANCH" != "master" ]]; then
-    echo -e "${YELLOW}⚠️  Warning: Not on main/master branch (current: ${CURRENT_BRANCH})${RESET}"
-    read -p "Continue anyway? (y/N) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
-    fi
+if [[ "$CURRENT_BRANCH" == "main" || "$CURRENT_BRANCH" == "master" ]]; then
+    echo -e "${RED}❌ Error: Cannot run release script on main/master branch${RESET}"
+    echo "Please create a release branch first:"
+    echo "  git checkout -b release/v${VERSION}"
+    exit 1
 fi
 
 # Check for uncommitted changes
@@ -73,39 +71,42 @@ echo ""
 cat bin/checksums.txt
 echo ""
 
-# Create git tag
-echo -e "${BLUE}🏷️  Creating git tag v${VERSION}...${RESET}"
+# Commit VERSION file
+echo -e "${BLUE}💾 Committing VERSION file...${RESET}"
 git add VERSION
-git commit -m "Release v${VERSION}" || true
-git tag -a "v${VERSION}" -m "Release v${VERSION}
-
-See CHANGELOG.md for details.
-"
-echo -e "${GREEN}✅ Git tag created${RESET}"
+git commit -m "chore: bump version to ${VERSION}" || true
+echo -e "${GREEN}✅ Version committed${RESET}"
 
 # Summary
 echo ""
 echo -e "${GREEN}${BOLD}✅ Release v${VERSION} prepared successfully!${RESET}"
 echo ""
 echo -e "${BLUE}📝 Next steps:${RESET}"
-echo "  1. Review the changes:"
-echo "     git show v${VERSION}"
 echo ""
-echo "  2. Push the tag:"
+echo "  1. Push release branch:"
+echo "     git push origin ${CURRENT_BRANCH}"
+echo ""
+echo "  2. Create Pull Request:"
+echo "     - Go to: https://github.com/yourusername/ai-helper/compare"
+echo "     - Base: main"
+echo "     - Compare: ${CURRENT_BRANCH}"
+echo "     - Title: Release v${VERSION}"
+echo "     - Description: Copy from .github/RELEASE.md"
+echo ""
+echo "  3. After PR is merged to main:"
+echo "     git checkout main"
+echo "     git pull origin main"
+echo "     git tag -a v${VERSION} -m \"Release v${VERSION}\""
 echo "     git push origin v${VERSION}"
 echo ""
-echo "  3. Create GitHub release:"
-echo "     - Go to: https://github.com/yourusername/ai-helper/releases/new"
-echo "     - Tag: v${VERSION}"
-echo "     - Title: AI Terminal Helper v${VERSION}"
-echo "     - Description: Copy from .github/RELEASE.md"
-echo "     - Upload binaries from bin/"
-echo "     - Upload checksums.txt"
+echo "  4. GitHub Actions will automatically:"
+echo "     - Build binaries for all platforms"
+echo "     - Create GitHub release"
+echo "     - Upload binaries and checksums"
 echo ""
-echo "  4. Announce the release:"
-echo "     - Update README.md badges"
+echo "  5. Announce the release:"
 echo "     - Post on social media"
 echo "     - Update documentation"
 echo ""
-echo -e "${YELLOW}💡 Tip: Use 'git push --tags' to push all tags${RESET}"
+echo -e "${YELLOW}💡 Tip: Review RELEASE-SUMMARY.md for announcement templates${RESET}"
 
