@@ -442,22 +442,38 @@ source ~/.zshrc
 
 ---
 
-## 🆚 Comparison: Go vs Bash vs Warp
+## ✨ Key Benefits
 
-| Feature               | Go Binary                       | Bash Scripts | Warp Terminal     |
-| --------------------- | ------------------------------- | ------------ | ----------------- |
-| **Validation**        | ✅ Yes (catches hallucinations!) | ❌ No         | ❌ No              |
-| **Privacy**           | ✅ 100% local                    | ✅ 100% local | ❌ Cloud-based     |
-| **Cost**              | ✅ Free                          | ✅ Free       | ❌ $10-20/mo       |
-| **Speed**             | ✅ 10x faster                    | ⚠️ Slow       | ⚠️ Network latency |
-| **Distribution**      | ✅ Single binary                 | ⚠️ 5 files    | ✅ App bundle      |
-| **Testing**           | ✅ Easy (`go test`)              | ❌ Hard       | N/A               |
-| **Maintainability**   | ✅ Type-safe                     | ⚠️ Bash       | N/A               |
-| **Security Scanning** | ✅ Yes                           | ✅ Yes        | ❌ No              |
-| **Offline Cache**     | ✅ Yes                           | ✅ Yes        | ⚠️ Limited         |
-| **Air-gapped**        | ✅ Yes                           | ✅ Yes        | ❌ No              |
+### 🎯 Command Validation
+- **Catches AI hallucinations** before they reach you
+- **Automatic re-querying** when validation fails
+- **Prevents invalid commands** like `docker ps --sort`
 
-**Verdict:** Go version is the best choice for production SRE work!
+### 🚀 Performance
+- **10x faster** than bash version
+- **5ms startup** time
+- **0.5ms cache lookups**
+- **Single 5.5MB binary**
+
+### 🔒 Privacy & Security
+- **100% local** - No cloud, no telemetry
+- **Safe for secrets** - AWS keys, k8s tokens, DB passwords
+- **18 dangerous patterns** detected and blocked
+- **Air-gapped friendly** - Works completely offline
+
+### 🛠️ Developer Experience
+- **Easy to test** - `go test` for unit tests
+- **Type-safe** - Compile-time error checking
+- **Easy to distribute** - Single binary, no dependencies
+- **Extensible** - Add new validators easily
+
+### 💡 Smart Features
+- **Intelligent model routing** - Picks best model for each command
+- **Offline caching** - 40-60% faster for repeated errors
+- **Rate limiting** - Prevents AI spam
+- **Proactive mode** - Generate commands from natural language
+- **Colorful output** - Easy to read terminal output
+- **Hotkey support** - ⌥A and ⌥K for quick access
 
 ---
 
