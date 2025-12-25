@@ -2,7 +2,7 @@
 
 **Local, fast, hallucination-preventing AI assistant for DevOps/SRE/MLOps**
 
-[![Version](https://img.shields.io/badge/version-2.0.0--go-blue.svg)](https://github.com/amaslovskyi/ai-helper)
+[![Version](https://img.shields.io/badge/version-2.1.0--go-blue.svg)](https://github.com/amaslovskyi/ai-helper)
 [![Go](https://img.shields.io/badge/go-1.21+-00ADD8.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -49,7 +49,14 @@ $ ask list docker containers sorted by memory
 # 1. Install Ollama & models
 brew install ollama
 ollama serve &
-ollama pull qwen3:8b-q4_K_M
+
+# Pull required models (9.5 GB total)
+ollama pull qwen3:8b-q4_K_M      # Primary (K8s, Terraform, AWS, Docker)
+ollama pull gemma3:4b-it-q4_K_M  # Python/ML errors
+ollama pull qwen3:4b-q4_K_M      # Fast fallback
+
+# Optional: Ultra-fast for simple commands (1.0 GB)
+ollama pull qwen3:1.7b-q4_K_M    # cp, mv, rm, grep, find
 
 # 2. Build & install
 cd /path/to/ai-helper
@@ -59,8 +66,8 @@ make install
 echo 'source ~/.ai/ai-helper.zsh' >> ~/.zshrc
 source ~/.zshrc
 
-# 4. Test validation (catches hallucination!)
-ask list docker containers sorted by memory
+# 4. Test validation with your favorite alias!
+k get pods --sort memory  # Using kubectl alias
 ```
 
 See [QUICKSTART.md](QUICKSTART.md) for detailed setup.
@@ -70,19 +77,26 @@ See [QUICKSTART.md](QUICKSTART.md) for detailed setup.
 ## ✨ Features
 
 ### Core Features
-- ✅ **Command Validation** - Catches AI hallucinations before showing them
+- ✅ **Command Validation** - 8 validators catch AI hallucinations
+- ✅ **Alias Support** - Works with k, tf, tg, h, gco, gp, and 50+ more
+- ✅ **Oh My Zsh Compatible** - Full git plugin alias support
 - ✅ **Security Scanning** - Prevents dangerous commands (18 patterns)
+- ✅ **Confidence Scoring** - High/Medium/Low confidence indicators
 - ✅ **Smart Caching** - 40-60% faster with offline cache
 - ✅ **Rate Limiting** - Prevents AI spam on repeated failures
 - ✅ **Proactive Mode** - Natural language → commands
 - ✅ **Reactive Mode** - Automatic error fixing
 - ✅ **Colorful Output** - Easy to read terminal output
 
-### Validators (Prevent Hallucinations)
-- ✅ **Docker** - Validates flags, catches `--sort` hallucination
-- 🚧 **Kubectl** - Coming in v2.1 (YAML parsing)
-- 🚧 **Terraform** - Coming in v2.1 (HCL parsing)
-- 🚧 **Git** - Coming in v2.1
+### Validators (Prevent Hallucinations) - 8 Total!
+- ✅ **kubectl** (k) - K8s commands + YAML validation
+- ✅ **terraform** (tf) - Terraform commands + HCL syntax
+- ✅ **terragrunt** (tg) - Terragrunt + dangerous run-all detection
+- ✅ **helm** (h) - Helm 2 vs 3 + namespace checks
+- ✅ **git** (50+ aliases) - Git + Oh My Zsh plugin support
+- ✅ **docker** (d, dc) - Docker + docker-compose
+- ✅ **ansible** - Ansible + dangerous operation warnings
+- ✅ **argocd** - ArgoCD CLI operations
 
 ---
 
@@ -112,12 +126,20 @@ Root: Lists all running Docker containers
 Tip: Add -a to see stopped containers too
 ```
 
-### Tool-Specific Shortcuts
+### Tool-Specific Shortcuts (with alias support!)
 ```bash
+# Use full commands or aliases - both work!
 kask show pods in production    # Kubernetes
+k get pods --sort memory        # Using 'k' alias - AI validates!
+
 dask list containers by memory  # Docker (with validation!)
+d ps --sort memusage           # Using 'd' alias - catches hallucination!
+
 task how do I plan changes      # Terraform
+tf plan --apply                # Using 'tf' alias - AI corrects!
+
 gask how do I undo last commit  # Git
+gco -b new-feature             # Using Oh My Zsh alias - works perfectly!
 ```
 
 ### Manual Trigger
@@ -144,11 +166,19 @@ ai-helper/
 │   ├── llm/                    # Ollama integration
 │   │   ├── types.go            # Request/Response types
 │   │   ├── router.go           # Smart model selection
+│   │   ├── confidence.go       # Confidence scoring (NEW in v2.1!)
 │   │   └── ollama.go           # Ollama client
-│   ├── validators/             # Command validators (NEW!)
+│   ├── validators/             # Command validators (8 total!)
 │   │   ├── types.go            # Validator interface
-│   │   └── docker/
-│   │       └── docker.go       # Docker command validation
+│   │   ├── aliases.go          # Alias resolution (NEW in v2.1!)
+│   │   ├── docker/             # Docker validator
+│   │   ├── kubectl/            # Kubernetes validator (NEW!)
+│   │   ├── terraform/          # Terraform validator (NEW!)
+│   │   ├── terragrunt/         # Terragrunt validator (NEW!)
+│   │   ├── helm/               # Helm validator (NEW!)
+│   │   ├── git/                # Git + Oh My Zsh (NEW!)
+│   │   ├── ansible/            # Ansible validator (NEW!)
+│   │   └── argocd/             # ArgoCD validator (NEW!)
 │   ├── security/               # Security scanning
 │   │   └── scanner.go          # Dangerous pattern detection
 │   ├── cache/                  # Cache system
@@ -165,27 +195,27 @@ ai-helper/
 
 ## 🎯 Why Go?
 
-| Aspect | Go Binary | Bash Scripts |
-|--------|-----------|--------------|
-| **Hallucination Prevention** | ✅ Validates commands | ❌ No validation |
-| **Performance** | ✅ 10x faster | ⚠️ Slow |
-| **Distribution** | ✅ Single 8MB binary | ⚠️ 5 files |
-| **Testing** | ✅ Easy (`go test`) | ❌ Difficult |
-| **Parsing** | ✅ Real parsers (YAML, HCL) | ❌ Regex only |
-| **Type Safety** | ✅ Compile-time checks | ❌ Runtime errors |
-| **Maintainability** | ✅ Clean architecture | ⚠️ Bash complexity |
-| **Concurrency** | ✅ Native goroutines | ❌ Difficult |
+| Aspect                       | Go Binary                  | Bash Scripts      |
+| ---------------------------- | -------------------------- | ----------------- |
+| **Hallucination Prevention** | ✅ Validates commands       | ❌ No validation   |
+| **Performance**              | ✅ 10x faster               | ⚠️ Slow            |
+| **Distribution**             | ✅ Single 8MB binary        | ⚠️ 5 files         |
+| **Testing**                  | ✅ Easy (`go test`)         | ❌ Difficult       |
+| **Parsing**                  | ✅ Real parsers (YAML, HCL) | ❌ Regex only      |
+| **Type Safety**              | ✅ Compile-time checks      | ❌ Runtime errors  |
+| **Maintainability**          | ✅ Clean architecture       | ⚠️ Bash complexity |
+| **Concurrency**              | ✅ Native goroutines        | ❌ Difficult       |
 
 ---
 
 ## 📊 Performance Benchmarks
 
-| Operation | Go | Bash | Improvement |
-|-----------|----|----|-------------|
-| Startup | 5ms | 50ms | **10x faster** |
-| Cache lookup | 0.5ms | 5ms | **10x faster** |
-| Security scan | 1ms | 10ms | **10x faster** |
-| Validation | 1ms | N/A | **NEW!** |
+| Operation     | Go    | Bash | Improvement    |
+| ------------- | ----- | ---- | -------------- |
+| Startup       | 5ms   | 50ms | **10x faster** |
+| Cache lookup  | 0.5ms | 5ms  | **10x faster** |
+| Security scan | 1ms   | 10ms | **10x faster** |
+| Validation    | 1ms   | N/A  | **NEW!**       |
 
 ---
 
@@ -205,29 +235,40 @@ make build-all      # Cross-compile for all platforms
 // 1. Create pkg/validators/yourtool/yourtool.go
 package yourtool
 
-import "github.com/amaslovskyi/ai-helper/pkg/validators"
+import (
+    "strings"
+    "github.com/amaslovskyi/ai-helper/pkg/validators"
+)
 
 type Validator struct{}
 
+func NewValidator() *Validator {
+    return &Validator{}
+}
+
 func (v *Validator) CanValidate(command string) bool {
-    return strings.HasPrefix(command, "yourtool ")
+    // Support both full command and alias
+    return strings.HasPrefix(command, "yourtool") || 
+           strings.HasPrefix(command, "yt ")  // alias
 }
 
 func (v *Validator) Validate(command string) error {
+    // Handle alias resolution
+    if strings.HasPrefix(command, "yt ") {
+        command = "yourtool" + command[2:]
+    }
+    
     // Your validation logic
     if invalidFlag(command) {
-        return validators.NewValidationError(
-            command,
-            "invalid flag",
-            "use --help for valid flags",
-        )
+        return fmt.Errorf("yourtool does not have --invalid-flag")
     }
     return nil
 }
 
 // 2. Register in cmd/ai-helper/main.go
-validators := []validators.Validator{
-    docker.NewValidator(),
+validatorsList := []validators.Validator{
+    kubectl.NewValidator(),
+    terraform.NewValidator(),
     yourtool.NewValidator(),  // Add here
 }
 ```
@@ -242,7 +283,14 @@ go test ./pkg/validators/docker/ -v
 
 ## 🗺️ Roadmap
 
-### v2.0 ✅ (Current)
+### v2.1 ✅ (Current)
+- ✅ 8 validators (kubectl, terraform, terragrunt, helm, git, docker, ansible, argocd)
+- ✅ Alias support (50+ aliases including Oh My Zsh)
+- ✅ Enhanced confidence scoring (High/Medium/Low)
+- ✅ YAML validation for kubectl
+- ✅ Dangerous operation blocking (git force push to main)
+
+### v2.0 ✅ (Previous)
 - ✅ Command validation (Docker)
 - ✅ Security scanning
 - ✅ Smart caching
@@ -250,25 +298,18 @@ go test ./pkg/validators/docker/ -v
 - ✅ Proactive mode
 - ✅ Colorful output
 
-### v2.1 (Next 2-3 weeks)
-- [ ] kubectl validator (YAML parsing)
-- [ ] terraform validator (HCL parsing)
-- [ ] git validator
-- [ ] Multi-model ensemble (query 3 models, pick best)
-- [ ] Confidence scoring
-- [ ] Interactive mode
-
-### v2.2 (4-5 weeks)
-- [ ] Workflow detection (multi-step commands)
+### v2.2 (Next 3-4 weeks)
+- [ ] MLOps tools (mlflow, dvc, kubeflow)
+- [ ] Cloud CLIs (aws, gcloud, az)
+- [ ] Interactive mode (prompt before execution)
+- [ ] Workflow support (multi-step sequences)
 - [ ] SQLite backend (optional)
-- [ ] Better logging
-- [ ] Performance profiling
 
 ### v3.0 (3-4 months)
 - [ ] Homebrew formula
 - [ ] Pre-built binaries for all platforms
 - [ ] Team knowledge sharing
-- [ ] Integration with modern tools
+- [ ] Plugin system
 
 See [ROADMAP.md](ROADMAP.md) for details.
 
@@ -277,22 +318,22 @@ See [ROADMAP.md](ROADMAP.md) for details.
 ## 🆚 Comparison
 
 ### vs Warp Terminal
-| Feature | AI Helper (Go) | Warp Terminal |
-|---------|---------------|---------------|
-| Privacy | ✅ 100% local | ❌ Cloud-based |
-| Cost | ✅ Free | ❌ $10-20/mo |
-| Validation | ✅ Yes | ❌ No |
-| Security Scanning | ✅ Yes | ❌ No |
-| Air-gapped | ✅ Yes | ❌ No |
-| Speed | ✅ 0.3-2.5s | ⚠️ 1-5s+ |
+| Feature           | AI Helper (Go) | Warp Terminal |
+| ----------------- | -------------- | ------------- |
+| Privacy           | ✅ 100% local   | ❌ Cloud-based |
+| Cost              | ✅ Free         | ❌ $10-20/mo   |
+| Validation        | ✅ Yes          | ❌ No          |
+| Security Scanning | ✅ Yes          | ❌ No          |
+| Air-gapped        | ✅ Yes          | ❌ No          |
+| Speed             | ✅ 0.3-2.5s     | ⚠️ 1-5s+       |
 
 ### vs Bash Version
-| Feature | Go Binary | Bash Scripts |
-|---------|-----------|--------------|
-| Validation | ✅ Yes | ❌ No |
-| Speed | ✅ 10x faster | ⚠️ Slow |
-| Distribution | ✅ Single binary | ⚠️ 5 files |
-| Testing | ✅ Easy | ❌ Hard |
+| Feature      | Go Binary       | Bash Scripts |
+| ------------ | --------------- | ------------ |
+| Validation   | ✅ Yes           | ❌ No         |
+| Speed        | ✅ 10x faster    | ⚠️ Slow       |
+| Distribution | ✅ Single binary | ⚠️ 5 files    |
+| Testing      | ✅ Easy          | ❌ Hard       |
 
 **Verdict:** Go version is the best choice for production!
 
@@ -311,10 +352,12 @@ See [ROADMAP.md](ROADMAP.md) for details.
 ## 🤝 Contributing
 
 Contributions welcome! Especially:
-- New validators (kubectl, terraform, git)
+- New validators (mlflow, dvc, kubeflow, aws, gcloud, az)
+- Alias support for more tools
 - Bug fixes
 - Performance improvements
 - Documentation
+- Test coverage
 
 See [ROADMAP.md](ROADMAP.md) for priority areas.
 
