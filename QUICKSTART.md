@@ -94,7 +94,7 @@ The AI helper **automatically** selects the best model based on your command:
 
 ```bash
 cd ~/Ai  # or your preferred directory
-git clone https://github.com/yourusername/ai-helper.git
+git clone https://github.com/amaslovskyi/ai-helper.git
 cd ai-helper
 ```
 
@@ -535,10 +535,10 @@ rm -rf ~/.ai/
 
 ## Support
 
-- **Issues:** [GitHub Issues](https://github.com/yourusername/ai-helper/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/yourusername/ai-helper/discussions)
+- **Issues:** [GitHub Issues](https://github.com/amaslovskyi/ai-helper/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/amaslovskyi/ai-helper/discussions)
 - **Documentation:** [README.md](README.md)
 
 ---
 
-**Built with ❤️ in Go. No more hallucinations!** 🚀
+**Built with ❤️ by [Andrii Maslovskyi](https://github.com/amaslovskyi). No more hallucinations!** 🚀
