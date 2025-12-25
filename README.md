@@ -533,3 +533,18 @@ kubectl get pods --invalid-flag  # Should trigger AI
 **Optimized for:** DevOps · SRE · MLOps · Platform Engineering
 
 Built with ❤️ for engineers who need fast, private, actionable help.
+
+---
+
+## 16. Roadmap & Future Improvements
+
+See [ROADMAP.md](ROADMAP.md) for detailed plans on:
+- Command history learning and offline caching
+- Context preservation and tool-specific helpers
+- Multi-model ensemble for critical commands
+- Security scanning and performance monitoring
+- Team knowledge sharing (100% local)
+- And much more!
+
+**Current Version:** v1.0 (Production-ready)  
+**Next Milestone:** Phase 1 - Polish & Performance (1-2 weeks)
