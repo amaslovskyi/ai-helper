@@ -308,6 +308,43 @@ source ~/.zshrc
 ai-helper version  # Should show 2.1.0-go
 ```
 
+### Quick Fix: If `ai-helper` command not found
+
+If you see `command not found: ai-helper` after installation:
+
+```bash
+# 1. Verify binary exists
+ls -la ~/.ai/ai-helper
+
+# 2. Check PATH (should include ~/.ai)
+echo $PATH | grep ".ai"
+
+# 3. If missing, reload ZSH integration
+source ~/.ai/ai-helper.zsh
+
+# 4. Still not working? Reinstall
+cd /path/to/ai-helper
+make clean
+make install
+source ~/.zshrc
+```
+
+### Quick Fix: Old bash files conflict
+
+If you're upgrading from bash version and see errors:
+
+```bash
+# Clean up old bash files
+rm -f ~/.ai/ai-helper.sh
+rm -f ~/.ai/cache-manager.sh
+rm -f ~/.ai/zsh-integration.sh
+
+# Reinstall Go version
+cd /path/to/ai-helper
+make install
+source ~/.zshrc
+```
+
 ---
 
 ## 📚 Documentation

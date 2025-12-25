@@ -30,7 +30,7 @@ git checkout main
 git pull origin main
 
 # Create release branch
-git checkout -b release/v2.0.0
+git checkout -b release/vX.Y.Z
 ```
 
 ### Step 2: Prepare Release
@@ -53,12 +53,12 @@ git commit -m "docs: update changelog for v2.0.0"
 # - Build for all platforms
 # - Create checksums
 # - Commit VERSION file
-./scripts/release.sh 2.0.0
+./scripts/release.sh X.Y.Z
 ```
 
 **Output:**
 ```
-✅ Release v2.0.0 prepared successfully!
+✅ Release vX.Y.Z prepared successfully!
 
 📝 Next steps:
   1. Push release branch
@@ -69,20 +69,20 @@ git commit -m "docs: update changelog for v2.0.0"
 ### Step 4: Push Release Branch
 
 ```bash
-git push origin release/v2.0.0
+git push origin release/vX.Y.Z
 ```
 
 ### Step 5: Create Pull Request
 
 1. Go to: https://github.com/amaslovskyi/ai-helper/compare
 2. **Base:** `main`
-3. **Compare:** `release/v2.0.0`
-4. **Title:** `Release v2.0.0`
+3. **Compare:** `release/vX.Y.Z`
+4. **Title:** `Release vX.Y.Z`
 5. **Description:** Copy from `.github/RELEASE.md`
 
 **PR Description Template:**
 ```markdown
-# Release v2.0.0
+# Release vX.Y.Z
 
 ## 🎉 What's New
 

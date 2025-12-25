@@ -92,12 +92,17 @@ alias ai-clear='ai-helper cache-clear'
 alias ai-version='ai-helper version'
 
 # Welcome message
-echo -e "\033[1;32m✅ AI Terminal Helper v2.0 (Go) Loaded!\033[0m"
+echo -e "\033[1;32m✅ AI Terminal Helper v2.1 (Go) Loaded!\033[0m"
 echo ""
 echo -e "\033[1;36mQuick Commands:\033[0m"
 echo -e "  \033[0;32mai\033[0m          - Re-analyze last failed command"
 echo -e "  \033[0;32mask\033[0m \033[0;33m<query>\033[0m - Generate command from natural language"
 echo -e "  \033[0;32mkask\033[0m/\033[0;32mdask\033[0m/\033[0;32mtask\033[0m/\033[0;32mgask\033[0m - Tool-specific queries"
+echo ""
+echo -e "\033[1;36mNew in v2.1:\033[0m"
+echo -e "  🎯 8 validators (kubectl, terraform, git, helm, terragrunt, ansible, argocd, docker)"
+echo -e "  🔤 50+ alias support (k, tf, tg, h, gco, gp, etc.)"
+echo -e "  📊 Confidence scoring (High/Medium/Low)"
 echo ""
 echo -e "\033[1;36mFeatures:\033[0m"
 echo -e "  🔒 Security scanning    ⏱️  Smart rate limiting"
