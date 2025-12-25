@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourusername/ai-helper/pkg/llm"
+	"github.com/amaslovskyi/ai-helper/pkg/llm"
 )
 
 // Entry represents a cache entry

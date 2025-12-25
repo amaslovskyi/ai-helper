@@ -1,4 +1,4 @@
-module github.com/yourusername/ai-helper
+module github.com/amaslovskyi/ai-helper
 
 go 1.25.5
 

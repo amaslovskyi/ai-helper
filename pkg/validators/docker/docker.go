@@ -3,7 +3,7 @@ package docker
 import (
 	"strings"
 
-	"github.com/yourusername/ai-helper/pkg/validators"
+	"github.com/amaslovskyi/ai-helper/pkg/validators"
 )
 
 // Validator validates Docker commands
