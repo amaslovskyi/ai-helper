@@ -2,7 +2,7 @@
 
 **Local, fast, hallucination-preventing AI assistant for DevOps/SRE/MLOps**
 
-[![Version](https://img.shields.io/badge/version-2.1.0--go-blue.svg)](https://github.com/amaslovskyi/ai-helper)
+[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](https://github.com/amaslovskyi/ai-helper)
 [![Go](https://img.shields.io/badge/go-1.21+-00ADD8.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -78,7 +78,8 @@ See [QUICKSTART.md](QUICKSTART.md) for detailed setup.
 
 ### Core Features
 - ✅ **Command Validation** - 8 validators catch AI hallucinations
-- ✅ **Alias Support** - Works with k, tf, tg, h, gco, gp, and 50+ more
+- ✅ **Interactive Mode** 🆕 - Full control over AI activation (auto/interactive/manual/disabled)
+- ✅ **Alias Support** - Works with k, tf, tg, gco, gp, and 50+ more
 - ✅ **Oh My Zsh Compatible** - Full git plugin alias support
 - ✅ **Security Scanning** - Prevents dangerous commands (18 patterns)
 - ✅ **Confidence Scoring** - High/Medium/Low confidence indicators
@@ -114,6 +115,51 @@ unknown flag: --invalid-flag
 Root: Invalid flag removed
 Tip: Use kubectl get pods --help for valid flags
 ```
+
+### Interactive Mode (Control When AI Triggers) 🆕
+Choose what happens when commands fail:
+
+```bash
+# Set interactive mode
+$ ai-helper config-set mode interactive
+
+# Run a command that fails
+$ kubectl get pods --sort=name
+unknown flag: --sort
+
+🤖 Command failed. What would you like to do?
+
+  [1] Get AI suggestion - Let AI analyze and suggest a fix
+  [2] Show manual - Display manual page for this command
+  [3] Skip - Continue without fixing
+  [4] Disable AI for session - Turn off AI until terminal restart
+
+Your choice: 1
+
+✓ kubectl get pods --sort-by=.metadata.creationTimestamp
+Root: kubectl doesn't have --sort, use --sort-by
+Tip: Sort by any field using JSONPath syntax
+```
+
+**4 Activation Modes:**
+- `auto` - AI triggers automatically (default)
+- `interactive` - Show menu, you choose (recommended for production)
+- `manual` - AI only with explicit `ask` commands
+- `disabled` - Turn off AI completely
+
+**Per-Tool Configuration:**
+```bash
+# Interactive for critical tools
+ai-helper config-set tool-mode kubectl interactive
+ai-helper config-set tool-mode terraform interactive
+
+# Auto for everything else
+ai-helper config-set mode auto
+```
+
+📖 **See [docs/INTERACTIVE-MODE.md](docs/INTERACTIVE-MODE.md) for full guide**
+
+---
 
 ### Proactive Mode (Ask Before Running)
 Generate commands from natural language:
