@@ -14,9 +14,12 @@ import (
 	"github.com/yourusername/ai-helper/pkg/ui"
 	"github.com/yourusername/ai-helper/pkg/validators"
 	"github.com/yourusername/ai-helper/pkg/validators/docker"
+	"github.com/yourusername/ai-helper/pkg/validators/git"
+	"github.com/yourusername/ai-helper/pkg/validators/kubectl"
+	"github.com/yourusername/ai-helper/pkg/validators/terraform"
 )
 
-const version = "2.0.0-go"
+const version = "2.1.0-go"
 
 func main() {
 	if len(os.Args) < 2 {
@@ -48,9 +51,11 @@ func main() {
 	scanner := security.NewScanner()
 
 	// Create validators
-	validators := []validators.Validator{
+	validatorsList := []validators.Validator{
 		docker.NewValidator(),
-		// TODO: Add kubectl, terraform, git validators
+		kubectl.NewValidator(),
+		terraform.NewValidator(),
+		git.NewValidator(),
 	}
 
 	// Parse command
@@ -58,9 +63,9 @@ func main() {
 
 	switch cmd {
 	case "analyze":
-		handleAnalyze(client, cacheStore, scanner, validators)
+		handleAnalyze(client, cacheStore, scanner, validatorsList)
 	case "proactive", "ask":
-		handleProactive(client, scanner, validators)
+		handleProactive(client, scanner, validatorsList)
 	case "version":
 		fmt.Printf("AI Terminal Helper v%s (Go)\n", version)
 	case "cache-stats":
@@ -115,12 +120,13 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 	}
 
 	// Validate the suggested command
-	if err := validateCommand(resp.Suggestion, validators); err != nil {
-		ui.PrintWarning(fmt.Sprintf("AI suggestion validation failed: %v", err))
+	validationErr := validateCommand(resp.Suggestion, validators)
+	if validationErr != nil {
+		ui.PrintWarning(fmt.Sprintf("AI suggestion validation failed: %v", validationErr))
 		ui.PrintInfo("Querying AI again with validation context...")
 		
 		// Query again with validation error context
-		req.Context = fmt.Sprintf("Previous suggestion '%s' was invalid: %v", resp.Suggestion, err)
+		req.Context = fmt.Sprintf("Previous suggestion '%s' was invalid: %v", resp.Suggestion, validationErr)
 		resp, err = client.Query(ctx, req)
 		if err != nil {
 			ui.PrintError(fmt.Sprintf("AI re-query failed: %v", err))
@@ -128,12 +134,17 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 		}
 		
 		// Validate again
-		if err := validateCommand(resp.Suggestion, validators); err != nil {
-			ui.PrintError(fmt.Sprintf("AI still suggesting invalid command: %v", err))
+		validationErr = validateCommand(resp.Suggestion, validators)
+		if validationErr != nil {
+			ui.PrintError(fmt.Sprintf("AI still suggesting invalid command: %v", validationErr))
 			ui.PrintInfo("Suggestion: " + resp.Suggestion)
 			os.Exit(1)
 		}
 	}
+
+	// Calculate confidence
+	complexity := llm.CalculateCommandComplexity(command)
+	confLevel, confScore := llm.CalculateConfidence(resp, validationErr, complexity)
 
 	// Security scan
 	dangerResult, err := scanner.Scan(resp.Suggestion)
@@ -153,8 +164,8 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 		ui.PrintWarning(fmt.Sprintf("Failed to cache response: %v", err))
 	}
 
-	// Print response
-	printResponse(resp)
+	// Print response with confidence
+	printResponseWithConfidence(resp, confLevel, confScore)
 }
 
 func handleProactive(client llm.Client, scanner *security.Scanner, validators []validators.Validator) {
@@ -184,10 +195,15 @@ func handleProactive(client llm.Client, scanner *security.Scanner, validators []
 	}
 
 	// Validate the suggested command
-	if err := validateCommand(resp.Suggestion, validators); err != nil {
-		ui.PrintWarning(fmt.Sprintf("Validation failed: %v", err))
+	validationErr := validateCommand(resp.Suggestion, validators)
+	if validationErr != nil {
+		ui.PrintWarning(fmt.Sprintf("Validation failed: %v", validationErr))
 		// In proactive mode, still show the suggestion but with warning
 	}
+
+	// Calculate confidence
+	complexity := llm.CalculateCommandComplexity(query)
+	confLevel, confScore := llm.CalculateConfidence(resp, validationErr, complexity)
 
 	// Security scan
 	dangerResult, err := scanner.Scan(resp.Suggestion)
@@ -201,7 +217,7 @@ func handleProactive(client llm.Client, scanner *security.Scanner, validators []
 		os.Exit(1)
 	}
 
-	printResponse(resp)
+	printResponseWithConfidence(resp, confLevel, confScore)
 }
 
 func handleCacheStats(cacheStore *cache.Cache) {
@@ -251,6 +267,23 @@ func printResponse(resp *llm.Response) {
 	if resp.Tip != "" {
 		fmt.Println(ui.Colorize(ui.Yellow, "Tip: "+resp.Tip))
 	}
+}
+
+func printResponseWithConfidence(resp *llm.Response, level llm.ConfidenceLevel, score int) {
+	if resp.Suggestion != "" {
+		fmt.Println(ui.Colorize(ui.GreenBold, "✓ "+resp.Suggestion))
+	}
+	if resp.RootCause != "" {
+		fmt.Println(ui.Colorize(ui.Cyan, "Root: "+resp.RootCause))
+	}
+	if resp.Tip != "" {
+		fmt.Println(ui.Colorize(ui.Yellow, "Tip: "+resp.Tip))
+	}
+	// Print confidence
+	emoji := llm.GetConfidenceEmoji(level)
+	color := llm.GetConfidenceColor(level)
+	fmt.Printf("%sConfidence: %s %s (%d%%)%s\n",
+		color, emoji, level, score, ui.Reset)
 }
 
 func printUsage() {
