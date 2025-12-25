@@ -32,6 +32,10 @@ select_model() {
   # Monitoring & Observability (8B - log analysis)
   elif [[ "$cmd" =~ (prometheus|grafana|datadog|kubectl logs|stern) ]]; then
     echo "qwen3:8b-q4_K_M"
+
+  # Config management (8B - needs deep reasoning)
+  elif [[ "$cmd" =~ (ansible|salt|puppet) ]]; then
+    echo "qwen3:8b-q4_K_M"
   
   # ML/Data Engineering (4B instruction-tuned - stack traces)
   elif [[ "$cmd" =~ (python|pip|conda|poetry|jupyter|mlflow|kubeflow|ray|spark) ]]; then
