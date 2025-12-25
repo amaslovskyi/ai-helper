@@ -331,10 +331,13 @@ Add to `~/.zshrc`:
 export OLLAMA_NUM_THREADS=6        # Use 6 performance cores
 export OLLAMA_MAX_LOADED_MODELS=1  # Keep memory under 8 GB
 export OLLAMA_FLASH_ATTENTION=1    # Enable Flash Attention 2.0
+export OLLAMA_THINKING=false      # CRITICAL: Disable verbose thinking output
 
 # Optional: Reduce context window for faster responses
 export OLLAMA_NUM_CTX=4096         # Default is 2048, increase for logs
 ```
+
+**Important:** `OLLAMA_THINKING=false` is **required** to suppress the verbose "Thinking..." blocks. Without this, you'll see 100+ lines of reasoning process.
 
 **Expected latency:**
 

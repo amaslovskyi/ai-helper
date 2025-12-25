@@ -91,8 +91,9 @@ if ! ollama list | grep -q "$MODEL"; then
 fi
 
 # Execute AI query with ULTRA-AGGRESSIVE filtering (zero thinking output)
-# Strategy: Skip ALL lines until answer marker (✓ or Root:/Tip:/etc), then output only answer format
-ollama run "$MODEL" "$PROMPT" 2>/dev/null | awk '
+# Use OLLAMA_THINKING=false environment variable to suppress thinking at source
+# Then filter output to ensure clean results
+OLLAMA_THINKING=false ollama run "$MODEL" "$PROMPT" 2>/dev/null | awk '
   BEGIN { 
     answer_started = 0
     line_count = 0
