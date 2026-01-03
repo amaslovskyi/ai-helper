@@ -1,6 +1,14 @@
 #!/bin/bash
 # Release script for AI Terminal Helper
-# Usage: ./scripts/release.sh [version]
+# Usage: ./scripts/release.sh [version] or bash scripts/release.sh [version]
+
+# Ensure script is run with bash (not sh)
+if [ -z "$BASH_VERSION" ]; then
+    echo "❌ Error: This script must be run with bash, not sh"
+    echo "Usage: bash scripts/release.sh [version]"
+    echo "   or: ./scripts/release.sh [version]"
+    exit 1
+fi
 
 set -e
 
