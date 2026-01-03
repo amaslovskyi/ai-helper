@@ -1,6 +1,85 @@
-# AI Terminal Helper v2.3.0 - Interactive Mode 🎯
+# AI Terminal Helper v2.3.1 - Multi-Provider LLM Support 🚀
 
-**Take full control of your AI assistance with Interactive Mode!**
+**Choose your AI provider: Local Ollama or Cloud OpenCode!**
+
+---
+
+## 🎉 What's New in v2.3.1
+
+### 🚀 Multi-Provider LLM Architecture - Choose Your AI
+
+**The Problem:** Limited to local models only, or need access to state-of-the-art cloud models.
+
+**The Solution:** Multi-provider support - use Ollama for local privacy or OpenCode for advanced cloud models!
+
+```bash
+# Switch to OpenCode (cloud models)
+$ ai-helper config-set provider opencode
+
+# Use Claude Sonnet 4 for infrastructure tasks
+$ kubectl get pods --invalid-flag
+✓ kubectl get pods
+Root: Invalid flag detected
+Tip: Use 'kubectl get pods' for basic listing
+
+# Switch back to Ollama (local)
+$ ai-helper config-set provider ollama
+```
+
+### 🌟 Key Features
+
+**Dual Provider Support:**
+- **Ollama** (Local) - Privacy-first, offline-capable, free
+- **OpenCode** (Cloud) - State-of-the-art models (Claude 4, GPT-4o), no GPU required
+
+**Smart Model Routing:**
+- Infrastructure tools (kubectl, terraform, helm) → Claude Sonnet 4
+- ML/Data tools (python, mlflow, spark) → GPT-4o
+- Shell commands → GPT-4o-mini (fast & cost-effective)
+- Ollama routing unchanged (qwen3, gemma3)
+
+**Easy Configuration:**
+```bash
+# View current provider
+$ ai-helper config-show
+⚙️  Configuration:
+  Provider: opencode
+  Preferred Model: anthropic/claude-sonnet-4-20250514
+
+# Switch providers
+$ ai-helper config-set provider ollama
+$ ai-helper config-set provider opencode
+
+# Set preferred model
+$ ai-helper config-set model anthropic/claude-opus-4-20250514
+```
+
+**Supported OpenCode Models:**
+- `anthropic/claude-sonnet-4-20250514` (default - best for infrastructure)
+- `anthropic/claude-opus-4-20250514` (most capable)
+- `openai/gpt-4o` (excellent for ML/data tasks)
+- `openai/gpt-4o-mini` (fast & efficient)
+- `openai/gpt-3.5-turbo` (cost-effective)
+- `google/gemini-pro` (alternative option)
+- `ollama/llama3` (via OpenCode)
+- `ollama/qwen` (via OpenCode)
+
+### 📊 Benefits
+
+**Flexibility:**
+- ✅ Choose local (Ollama) or cloud (OpenCode) based on your needs
+- ✅ Access to Claude 4, GPT-4o without local GPU
+- ✅ Seamless switching between providers
+
+**Performance:**
+- ✅ Provider-specific optimizations
+- ✅ Optimal model selection per task type
+- ✅ Reduced latency with appropriate model choices
+
+**Compatibility:**
+- ✅ 100% backwards compatible with existing Ollama setup
+- ✅ Zero changes required for Ollama users
+- ✅ Optional OpenCode adoption
 
 ---
 
@@ -298,7 +377,11 @@ source ~/.zshrc
 ```bash
 # Check version
 ai-helper -v
-# Should show: AI Terminal Helper v2.3.0 (Go)
+# Should show: AI Terminal Helper v2.3.1 (Go)
+
+# Try OpenCode provider (requires OpenCode CLI installed)
+ai-helper config-set provider opencode
+ai-helper config-show
 
 # Try interactive mode
 ai-helper config-set mode interactive
@@ -308,7 +391,9 @@ kubectl get pods --invalid-flag
 
 ---
 
-## 🔄 Upgrading from v2.1
+## 🔄 Upgrading
+
+### From v2.3.0 to v2.3.1
 
 ```bash
 # Pull latest changes
@@ -320,21 +405,47 @@ make install
 source ~/.zshrc
 
 # Verify version
-ai-helper -v  # Should show v2.3.0
+ai-helper -v  # Should show v2.3.1
+
+# Try new OpenCode provider (optional)
+ai-helper config-set provider opencode
+```
+
+**What's New:**
+- ✅ Multi-provider LLM support (Ollama + OpenCode)
+- ✅ Smart model routing per task type
+- ✅ Version now reads from VERSION file automatically
+- ✅ All v2.3.0 features preserved
+
+### From v2.1 to v2.3.1
+
+```bash
+# Pull latest changes
+cd /path/to/ai-helper
+git pull origin main
+
+# Rebuild and install
+make install
+source ~/.zshrc
+
+# Verify version
+ai-helper -v  # Should show v2.3.1
 ```
 
 **Your existing config is preserved!**
 - Cache remains intact
 - No breaking changes
 - Smooth upgrade
+- New features are optional (Ollama still works as before)
 
 ---
 
 ## 📊 What's Included
 
 ### Core Features (All from v2.1 + New)
-- ✅ **Interactive Mode** 🆕 - 4 activation modes
-- ✅ **Configuration System** 🆕 - Per-tool overrides
+- ✅ **Multi-Provider LLM** 🆕 v2.3.1 - Ollama + OpenCode support
+- ✅ **Interactive Mode** 🆕 v2.3.0 - 4 activation modes
+- ✅ **Configuration System** 🆕 v2.3.0 - Per-tool overrides
 - ✅ **8 Validators** - kubectl, terraform, git, helm, terragrunt, ansible, argocd, docker
 - ✅ **50+ Alias Support** - k, tf, tg, gco, gp, etc.
 - ✅ **Oh My Zsh Compatible** - Full git plugin support
@@ -342,7 +453,14 @@ ai-helper -v  # Should show v2.3.0
 - ✅ **Confidence Scoring** - High/Medium/Low indicators
 - ✅ **Smart Caching** - 40-60% faster responses
 - ✅ **Rate Limiting** - Prevents AI spam
-- ✅ **100% Local** - No cloud, no telemetry
+- ✅ **Privacy Options** - Local (Ollama) or Cloud (OpenCode)
+
+### New in v2.3.1
+- 🆕 Multi-Provider LLM Architecture (Ollama + OpenCode)
+- 🆕 OpenCode Client Integration (168 lines)
+- 🆕 Provider-aware model routing
+- 🆕 Support for Claude 4, GPT-4o, and more
+- 🆕 Dynamic version from VERSION file
 
 ### New in v2.3.0
 - 🆕 Interactive Mode (4 activation modes)
@@ -354,8 +472,9 @@ ai-helper -v  # Should show v2.3.0
 - 🆕 Cleaner version string
 
 ### Code Statistics
-- **New Code:** ~440 lines
-- **New Packages:** 2 (`pkg/config`, `pkg/interactive`)
+- **v2.3.1 New Code:** ~270 lines (OpenCode provider)
+- **v2.3.0 New Code:** ~440 lines (Interactive Mode)
+- **Total New Packages:** 2 (`pkg/config`, `pkg/interactive`)
 - **Binary Size:** ~8MB per platform
 - **Build Status:** ✅ SUCCESS
 
@@ -441,16 +560,26 @@ ai-helper config-set mode disabled
 
 ## 🆚 Comparison
 
+### vs v2.3.0
+
+| Feature          | v2.3.0 | v2.3.1 |
+| ---------------- | ------ | ------ |
+| LLM Providers    | 1 (Ollama) | 2 (Ollama + OpenCode) |
+| Cloud Models     | ❌     | ✅     |
+| Model Routing    | Basic  | Smart (provider-aware) |
+| All v2.3.0 Features | ✅ | ✅ |
+
 ### vs v2.1
 
-| Feature          | v2.1  | v2.3  |
-| ---------------- | ----- | ----- |
-| Validators       | 8     | 8     |
+| Feature          | v2.1  | v2.3.1 |
+| ---------------- | ----- | ------ |
+| Validators       | 8     | 8      |
 | Alias Support    | ✅ 50+ | ✅ 50+ |
 | Interactive Mode | ❌     | ✅     |
 | Per-Tool Config  | ❌     | ✅     |
 | Config Commands  | ❌     | ✅     |
 | Session Control  | ❌     | ✅     |
+| LLM Providers    | 1     | 2      |
 
 ### vs Other Tools
 
@@ -473,12 +602,14 @@ ai-helper config-set mode disabled
 - [ ] Workflow detection (multi-step commands)
 - [ ] Multi-model ensemble (safety for critical ops)
 - [ ] Auto-execute safe commands option
+- [ ] Additional LLM provider support
 
 ### v3.0 (3-4 months)
 - [ ] Homebrew formula
 - [ ] Pre-built binaries
 - [ ] Team knowledge sharing
 - [ ] Plugin system
+- [ ] Provider marketplace
 
 ---
 
@@ -519,9 +650,9 @@ MIT License - See [LICENSE](../LICENSE) for details.
 
 ## 🎊 What This Release Means
 
-v2.3.0 gives you **full control** over your AI assistance experience while maintaining the speed and accuracy you expect.
+v2.3.1 gives you **choice and flexibility** - use local models for privacy or cloud models for advanced capabilities. Combined with v2.3.0's Interactive Mode, you have **full control** over your AI assistance experience.
 
-**Your terminal, your rules!** 🎯
+**Your terminal, your rules, your AI provider!** 🚀
 
 ---
 
