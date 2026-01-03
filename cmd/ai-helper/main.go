@@ -58,22 +58,28 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Create LLM client
-	client := llm.NewOllamaClient("")
+	// Create LLM client based on provider configuration
+	var client llm.Client
+	switch cfg.Provider {
+	case config.ProviderOpenCode:
+		client = llm.NewOpenCodeClient(cfg.PreferredModel)
+	default:
+		client = llm.NewOllamaClient("")
+	}
 
 	// Create security scanner
 	scanner := security.NewScanner()
 
 	// Create validators (order matters: more specific first)
 	validatorsList := []validators.Validator{
-		kubectl.NewValidator(),      // k, kubectl
-		terraform.NewValidator(),    // tf, terraform
-		terragrunt.NewValidator(),   // tg, terragrunt
-		helm.NewValidator(),         // h, helm
-		git.NewValidator(),          // git, gco, gcb, gp, etc.
-		docker.NewValidator(),       // docker, d, dc
-		ansible.NewValidator(),      // ansible, ansible-playbook
-		argocd.NewValidator(),       // argocd
+		kubectl.NewValidator(),    // k, kubectl
+		terraform.NewValidator(),  // tf, terraform
+		terragrunt.NewValidator(), // tg, terragrunt
+		helm.NewValidator(),       // h, helm
+		git.NewValidator(),        // git, gco, gcb, gp, etc.
+		docker.NewValidator(),     // docker, d, dc
+		ansible.NewValidator(),    // ansible, ansible-playbook
+		argocd.NewValidator(),     // argocd
 	}
 
 	// Parse command
@@ -124,7 +130,7 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 
 	// Extract tool name for mode checking
 	toolName := extractToolName(command)
-	
+
 	// Check if AI is disabled
 	if !cfg.IsEnabled(toolName) {
 		os.Exit(exitCode) // Just exit with the original error code
@@ -141,12 +147,12 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 	if cfg.ShouldShowMenu(toolName) {
 		// Show interactive menu
 		result := interactive.ShowErrorMenu(command, errorOutput)
-		
+
 		switch result.Action {
 		case "ai":
 			// Continue to AI suggestion
 		case "manual":
-			fmt.Println(ui.Colorize(ui.Cyan, "📖 Tip: Use 'man " + toolName + "' for documentation"))
+			fmt.Println(ui.Colorize(ui.Cyan, "📖 Tip: Use 'man "+toolName+"' for documentation"))
 			return
 		case "skip":
 			return
@@ -186,7 +192,7 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 	if validationErr != nil {
 		ui.PrintWarning(fmt.Sprintf("AI suggestion validation failed: %v", validationErr))
 		ui.PrintInfo("Querying AI again with validation context...")
-		
+
 		// Query again with validation error context
 		req.Context = fmt.Sprintf("Previous suggestion '%s' was invalid: %v", resp.Suggestion, validationErr)
 		resp, err = client.Query(ctx, req)
@@ -194,7 +200,7 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 			ui.PrintError(fmt.Sprintf("AI re-query failed: %v", err))
 			os.Exit(1)
 		}
-		
+
 		// Validate again
 		validationErr = validateCommand(resp.Suggestion, validators)
 		if validationErr != nil {
@@ -237,7 +243,7 @@ func handleProactive(client llm.Client, scanner *security.Scanner, validators []
 	}
 
 	query := strings.Join(os.Args[2:], " ")
-	
+
 	// Check if AI is enabled (use empty string for tool since this is general query)
 	if !cfg.IsEnabled("") {
 		os.Exit(0)
@@ -365,18 +371,21 @@ func extractToolName(command string) string {
 // handleConfigShow displays current configuration
 func handleConfigShow(cfg *config.Config) {
 	fmt.Println(ui.Colorize(ui.CyanBold, "⚙️  Configuration:"))
-	fmt.Printf("  %s %s\n", 
-		ui.Colorize(ui.Yellow, "Activation Mode:"), 
+	fmt.Printf("  %s %s\n",
+		ui.Colorize(ui.Yellow, "Activation Mode:"),
 		ui.Colorize(ui.Green, string(cfg.ActivationMode)))
-	fmt.Printf("  %s %v\n", 
-		ui.Colorize(ui.Yellow, "Auto Execute Safe:"), 
+	fmt.Printf("  %s %v\n",
+		ui.Colorize(ui.Yellow, "Auto Execute Safe:"),
 		cfg.AutoExecuteSafe)
-	fmt.Printf("  %s %v\n", 
-		ui.Colorize(ui.Yellow, "Show Confidence:"), 
+	fmt.Printf("  %s %v\n",
+		ui.Colorize(ui.Yellow, "Show Confidence:"),
 		cfg.ShowConfidence)
+	fmt.Printf("  %s %s\n",
+		ui.Colorize(ui.Yellow, "Provider:"),
+		ui.Colorize(ui.Green, string(cfg.Provider)))
 	if cfg.PreferredModel != "" {
-		fmt.Printf("  %s %s\n", 
-			ui.Colorize(ui.Yellow, "Preferred Model:"), 
+		fmt.Printf("  %s %s\n",
+			ui.Colorize(ui.Yellow, "Preferred Model:"),
 			cfg.PreferredModel)
 	}
 	if len(cfg.ToolSpecificModes) > 0 {
@@ -396,11 +405,15 @@ func handleConfigSet(cfg *config.Config, configFile string) {
 		fmt.Println("  mode <auto|interactive|manual|disabled> - Set activation mode")
 		fmt.Println("  tool-mode <tool> <mode> - Set tool-specific mode")
 		fmt.Println("  confidence <true|false> - Show/hide confidence scores")
+		fmt.Println("  provider <ollama|opencode> - Set LLM provider")
+		fmt.Println("  model <model-name> - Set preferred model")
 		fmt.Println()
 		fmt.Println("Examples:")
 		fmt.Println("  ai-helper config-set mode interactive")
 		fmt.Println("  ai-helper config-set tool-mode kubectl interactive")
 		fmt.Println("  ai-helper config-set confidence false")
+		fmt.Println("  ai-helper config-set provider opencode")
+		fmt.Println("  ai-helper config-set model anthropic/claude-sonnet-4-20250514")
 		os.Exit(1)
 	}
 
@@ -415,7 +428,7 @@ func handleConfigSet(cfg *config.Config, configFile string) {
 		}
 		cfg.ActivationMode = config.ActivationMode(value)
 		ui.PrintSuccess(fmt.Sprintf("Activation mode set to: %s", value))
-	
+
 	case "tool-mode":
 		if len(os.Args) < 5 {
 			ui.PrintError("Usage: ai-helper config-set tool-mode <tool> <mode>")
@@ -429,7 +442,7 @@ func handleConfigSet(cfg *config.Config, configFile string) {
 		}
 		cfg.ToolSpecificModes[tool] = config.ActivationMode(mode)
 		ui.PrintSuccess(fmt.Sprintf("Mode for %s set to: %s", tool, mode))
-	
+
 	case "confidence":
 		if value == "true" {
 			cfg.ShowConfidence = true
@@ -440,7 +453,20 @@ func handleConfigSet(cfg *config.Config, configFile string) {
 			os.Exit(1)
 		}
 		ui.PrintSuccess(fmt.Sprintf("Show confidence set to: %s", value))
-	
+
+	case "provider":
+		provider := config.LLMProvider(value)
+		if provider != config.ProviderOllama && provider != config.ProviderOpenCode {
+			ui.PrintError("Invalid provider. Use: ollama or opencode")
+			os.Exit(1)
+		}
+		cfg.Provider = provider
+		ui.PrintSuccess(fmt.Sprintf("Provider set to: %s", value))
+
+	case "model":
+		cfg.PreferredModel = value
+		ui.PrintSuccess(fmt.Sprintf("Preferred model set to: %s", value))
+
 	default:
 		ui.PrintError(fmt.Sprintf("Unknown key: %s", key))
 		os.Exit(1)
@@ -489,4 +515,3 @@ Examples:
   ai-helper config-set mode interactive
 `, version)
 }
-

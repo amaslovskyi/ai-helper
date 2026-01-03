@@ -7,6 +7,85 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.3.1] - 2026-01-03
+
+### 🎯 Major Feature: OpenCode LLM Provider Support
+
+#### ✨ Added
+
+**Multi-Provider Architecture**
+- **New LLM Provider System** - Support for both Ollama (local) and OpenCode (cloud) providers
+- **Seamless Switching** - Users can choose between local Ollama or OpenCode AI service
+- **Provider-Specific Routing** - Intelligent model selection optimized per provider
+
+**OpenCode Integration** (`pkg/llm/opencode.go` - 168 lines)
+- `OpenCodeClient` implementation for OpenCode CLI integration
+- Supports multiple model endpoints:
+  - `anthropic/claude-sonnet-4-20250514` (default)
+  - `anthropic/claude-opus-4-20250514`
+  - `openai/gpt-4o`
+  - `openai/gpt-4o-mini`
+  - `openai/gpt-3.5-turbo`
+  - `google/gemini-pro`
+  - `ollama/llama3`
+  - `ollama/qwen`
+- Auto-detection of model format (with/without provider prefix)
+- Config management integration
+
+**Enhanced Configuration** (`pkg/config/config.go`)
+- New `LLMProvider` type with constants: `ProviderOllama` and `ProviderOpenCode`
+- Added `Provider` field to configuration (default: `ProviderOllama`)
+- Persistent configuration stored in `~/.ai/config.json`
+
+**Model Routing Enhancements** (`pkg/llm/router.go`)
+- Provider-aware routing rules
+- OpenCode routing rules:
+  - Infrastructure tools (kubectl, helm, terraform, etc.) → Claude Sonnet
+  - Container/CI/CD (docker, gitlab-ci, jenkins) → Claude Sonnet
+  - ML/Data (python, mlflow, spark) → GPT-4o
+  - Shell commands (cp, mv, rm, etc.) → GPT-4o-mini
+- Ollama routing unchanged (uses qwen3 and gemma3 models)
+
+**Updated CLI Commands** (`cmd/ai-helper/main.go`)
+- `ai-helper config-set provider <ollama|opencode>` - Switch LLM provider
+- `ai-helper config-set model <model-name>` - Set preferred model
+- `ai-helper config-show` now displays current provider
+
+#### 📊 Statistics
+
+**New Code:**
+- `pkg/llm/opencode.go` - 168 lines
+- Provider architecture across config, types, router, and main - ~100 lines
+- **Total:** ~270 lines of new code
+
+**Files Modified:**
+- `VERSION` - Updated to 2.3.1
+- `bin/ai-helper` - Recompiled binary
+- `cmd/ai-helper/main.go` - Provider initialization and CLI updates
+- `pkg/config/config.go` - Provider configuration support
+- `pkg/llm/ollama.go` - Provider method implementation
+- `pkg/llm/router.go` - Dual-provider routing rules
+- `pkg/llm/types.go` - Provider type and OpenCode models
+
+#### 🎯 Benefits
+
+**Flexibility:**
+- Choose between local models (Ollama) or cloud models (OpenCode)
+- Access to state-of-the-art models (Claude 4, GPT-4o)
+- No local GPU required for advanced models
+
+**Performance:**
+- Provider-specific optimizations
+- Optimal model selection per task
+- Reduced latency with appropriate model choices
+
+**Compatibility:**
+- Backwards compatible with existing Ollama setup
+- Zero changes required for Ollama users
+- Optional OpenCode adoption
+
+---
+
 ## [Unreleased]
 
 ## [2.3.0] - 2025-12-25
