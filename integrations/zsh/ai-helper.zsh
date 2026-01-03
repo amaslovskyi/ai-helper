@@ -28,8 +28,14 @@ preexec() {
 precmd() {
   local exit_code=$?
   LAST_EXIT_CODE=$exit_code
-  
-  # Only trigger AI on failure
+
+  # Skip AI for signal-terminated commands (Ctrl+C = 130, SIGTERM = 143, SIGKILL = 137)
+  # These are user-initiated interruptions, not actual command failures
+  if [[ $exit_code -eq 130 ]] || [[ $exit_code -eq 143 ]] || [[ $exit_code -eq 137 ]]; then
+    return 0
+  fi
+
+  # Only trigger AI on actual failures
   if [[ $exit_code -ne 0 ]]; then
     local now=$(date +%s)
     local elapsed=$((now - AI_LAST_CALL))

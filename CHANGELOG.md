@@ -84,6 +84,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Zero changes required for Ollama users
 - Optional OpenCode adoption
 
+#### 🐛 Fixed
+
+- **Ctrl+C Signal Handling** - AI no longer triggers on user interrupts (exit code 130)
+  - Added signal exit code detection (130=SIGINT, 143=SIGTERM, 137=SIGKILL)
+  - Fixed in zsh integration hook (`integrations/zsh/ai-helper.zsh`)
+  - Fixed in bash integration script (`bash/zsh-integration.sh`)
+  - Fixed in Go binary for defense-in-depth (`cmd/ai-helper/main.go`)
+
 ---
 
 ## [Unreleased]

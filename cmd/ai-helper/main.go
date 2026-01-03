@@ -129,6 +129,12 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 		errorOutput = os.Args[4]
 	}
 
+	// Skip AI for signal-terminated commands (Ctrl+C = 130, SIGTERM = 143, SIGKILL = 137)
+	// These are user-initiated interruptions, not actual command failures
+	if exitCode == 130 || exitCode == 143 || exitCode == 137 {
+		os.Exit(exitCode)
+	}
+
 	// Extract tool name for mode checking
 	toolName := extractToolName(command)
 

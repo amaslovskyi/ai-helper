@@ -342,6 +342,12 @@ Commands:
 
 **Why:** Professional, semantic versioning.
 
+### 🐛 Bug Fix: Ctrl+C Signal Handling
+- AI no longer triggers on user interrupts (Ctrl+C)
+- Exit codes 130 (SIGINT), 143 (SIGTERM), 137 (SIGKILL) are now detected
+- Fixes annoying menu popping up when you manually interrupt commands
+- Applied to zsh integration, bash integration, and Go binary
+
 ---
 
 ## 📦 Installation
@@ -461,6 +467,7 @@ ai-helper -v  # Should show v2.3.1
 - 🆕 Provider-aware model routing
 - 🆕 Support for Claude 4, GPT-4o, and more
 - 🆕 Dynamic version from VERSION file
+- 🐛 Fixed Ctrl+C signal handling (no more menu on interrupts)
 
 ### New in v2.3.0
 - 🆕 Interactive Mode (4 activation modes)
