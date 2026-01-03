@@ -2,7 +2,7 @@
 
 **Local, fast, hallucination-preventing AI assistant for DevOps/SRE/MLOps**
 
-[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](https://github.com/amaslovskyi/ai-helper)
+[![Version](https://img.shields.io/badge/version-2.3.1-blue.svg)](https://github.com/amaslovskyi/ai-helper)
 [![Go](https://img.shields.io/badge/go-1.21+-00ADD8.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -30,11 +30,12 @@ $ ask list docker containers sorted by memory
 - ~5ms startup vs ~50ms for bash
 - ~0.5ms cache lookups vs ~5ms for bash
 
-### 🔒 100% Private & Secure
-- Fully local execution (no cloud, no telemetry)
+### 🔒 Privacy & Security Options
+- **Local Mode (Ollama)** - 100% private, fully local execution (no cloud, no telemetry)
+- **Cloud Mode (OpenCode)** - Optional access to state-of-the-art models (Claude 4, GPT-4o)
 - Safe for secrets (AWS keys, k8s tokens, DB passwords)
 - Compliant with SOC2, HIPAA, PCI-DSS, FedRAMP
-- Works in air-gapped environments
+- Works in air-gapped environments (with Ollama)
 
 ### 📦 Single Binary
 - One 8MB binary vs 5 bash scripts
@@ -44,6 +45,8 @@ $ ask list docker containers sorted by memory
 ---
 
 ## 🚀 Quick Start
+
+### Option 1: Local (Ollama) - 100% Private
 
 ```bash
 # 1. Install Ollama & models
@@ -70,6 +73,28 @@ source ~/.zshrc
 k get pods --sort memory  # Using kubectl alias
 ```
 
+### Option 2: Cloud (OpenCode) - Advanced Models
+
+```bash
+# 1. Install OpenCode CLI
+# Visit https://opencode.ai for installation instructions
+
+# 2. Build & install
+cd /path/to/ai-helper
+make install
+
+# 3. Configure OpenCode provider
+ai-helper config-set provider opencode
+ai-helper config-set model anthropic/claude-sonnet-4-20250514
+
+# 4. Add to shell
+echo 'source ~/.ai/ai-helper.zsh' >> ~/.zshrc
+source ~/.zshrc
+
+# 5. Test it!
+kubectl get pods --invalid-flag
+```
+
 See [QUICKSTART.md](QUICKSTART.md) for detailed setup.
 
 ---
@@ -77,8 +102,9 @@ See [QUICKSTART.md](QUICKSTART.md) for detailed setup.
 ## ✨ Features
 
 ### Core Features
+- ✅ **Multi-Provider LLM** 🆕 v2.3.1 - Choose Ollama (local) or OpenCode (cloud)
 - ✅ **Command Validation** - 8 validators catch AI hallucinations
-- ✅ **Interactive Mode** 🆕 - Full control over AI activation (auto/interactive/manual/disabled)
+- ✅ **Interactive Mode** 🆕 v2.3.0 - Full control over AI activation (auto/interactive/manual/disabled)
 - ✅ **Alias Support** - Works with k, tf, tg, gco, gp, and 50+ more
 - ✅ **Oh My Zsh Compatible** - Full git plugin alias support
 - ✅ **Security Scanning** - Prevents dangerous commands (18 patterns)
@@ -157,6 +183,19 @@ ai-helper config-set tool-mode terraform interactive
 ai-helper config-set mode auto
 ```
 
+**LLM Provider Configuration:** 🆕 v2.3.1
+```bash
+# Switch to OpenCode (cloud models)
+ai-helper config-set provider opencode
+ai-helper config-set model opencode/big-pickle
+
+# Switch back to Ollama (local)
+ai-helper config-set provider ollama
+
+# View current configuration
+ai-helper config-show
+```
+
 📖 **See [docs/INTERACTIVE-MODE.md](docs/INTERACTIVE-MODE.md) for full guide**
 
 ---
@@ -193,7 +232,16 @@ gco -b new-feature             # Using Oh My Zsh alias - works perfectly!
 ai  # Re-analyze last failed command
 ```
 
-### Management
+### Configuration Management
+```bash
+ai-helper config-show          # Show current configuration
+ai-helper config-set provider <ollama|opencode>  # Switch LLM provider
+ai-helper config-set model <model-name>          # Set preferred model
+ai-helper config-set mode <auto|interactive|manual|disabled>  # Set activation mode
+ai-helper config-reset         # Reset to defaults
+```
+
+### Cache & Version
 ```bash
 ai-helper cache-stats   # Show cache statistics
 ai-helper cache-clear   # Clear cache
@@ -209,11 +257,16 @@ ai-helper/
 ├── cmd/ai-helper/              # Main CLI application
 │   └── main.go
 ├── pkg/
-│   ├── llm/                    # Ollama integration
+│   ├── llm/                    # LLM provider integration
 │   │   ├── types.go            # Request/Response types
-│   │   ├── router.go           # Smart model selection
-│   │   ├── confidence.go       # Confidence scoring (NEW in v2.1!)
-│   │   └── ollama.go           # Ollama client
+│   │   ├── router.go           # Smart model selection (provider-aware)
+│   │   ├── confidence.go       # Confidence scoring
+│   │   ├── ollama.go           # Ollama client (local)
+│   │   └── opencode.go         # OpenCode client (cloud) 🆕 v2.3.1
+│   ├── config/                 # Configuration system 🆕 v2.3.0
+│   │   └── config.go           # Provider & mode configuration
+│   ├── interactive/            # Interactive mode 🆕 v2.3.0
+│   │   └── menu.go             # User choice menu
 │   ├── validators/             # Command validators (8 total!)
 │   │   ├── types.go            # Validator interface
 │   │   ├── aliases.go          # Alias resolution (NEW in v2.1!)
@@ -329,26 +382,29 @@ go test ./pkg/validators/docker/ -v
 
 ## 🗺️ Roadmap
 
-### v2.1 ✅ (Current)
+### v2.3.1 ✅ (Current)
+- ✅ Multi-provider LLM support (Ollama + OpenCode)
+- ✅ Provider-aware model routing
+- ✅ Support for Claude 4, GPT-4o, and more
+- ✅ Dynamic version from VERSION file
+
+### v2.3.0 ✅ (Previous)
+- ✅ Interactive Mode (4 activation modes)
+- ✅ Configuration system (per-tool overrides)
+- ✅ Session-level control
+
+### v2.1 ✅ (Previous)
 - ✅ 8 validators (kubectl, terraform, terragrunt, helm, git, docker, ansible, argocd)
 - ✅ Alias support (50+ aliases including Oh My Zsh)
 - ✅ Enhanced confidence scoring (High/Medium/Low)
 - ✅ YAML validation for kubectl
 - ✅ Dangerous operation blocking (git force push to main)
 
-### v2.0 ✅ (Previous)
-- ✅ Command validation (Docker)
-- ✅ Security scanning
-- ✅ Smart caching
-- ✅ Rate limiting
-- ✅ Proactive mode
-- ✅ Colorful output
-
-### v2.2 (Next 3-4 weeks)
+### v2.4 (Next 3-4 weeks)
 - [ ] MLOps tools (mlflow, dvc, kubeflow)
 - [ ] Cloud CLIs (aws, gcloud, az)
-- [ ] Interactive mode (prompt before execution)
 - [ ] Workflow support (multi-step sequences)
+- [ ] Additional LLM provider support
 - [ ] SQLite backend (optional)
 
 ### v3.0 (3-4 months)
@@ -356,6 +412,7 @@ go test ./pkg/validators/docker/ -v
 - [ ] Pre-built binaries for all platforms
 - [ ] Team knowledge sharing
 - [ ] Plugin system
+- [ ] Provider marketplace
 
 See [ROADMAP.md](ROADMAP.md) for details.
 
@@ -363,14 +420,15 @@ See [ROADMAP.md](ROADMAP.md) for details.
 
 ## 🌟 Key Features
 
-| Feature           | Capability   |
-| ----------------- | ------------ |
-| Privacy           | ✅ 100% local |
-| Cost              | ✅ Free       |
-| Validation        | ✅ Yes        |
-| Security Scanning | ✅ Yes        |
-| Air-gapped        | ✅ Yes        |
-| Speed             | ✅ 0.3-2.5s   |
+| Feature           | Capability                    |
+| ----------------- | ----------------------------- |
+| Privacy           | ✅ 100% local (Ollama)       |
+| LLM Providers     | ✅ 2 (Ollama + OpenCode)      |
+| Cost              | ✅ Free (Ollama) / Pay (OpenCode) |
+| Validation        | ✅ Yes                        |
+| Security Scanning | ✅ Yes                        |
+| Air-gapped        | ✅ Yes (Ollama)               |
+| Speed             | ✅ 0.3-2.5s                   |
 
 ### vs Bash Version
 | Feature      | Go Binary       | Bash Scripts |
@@ -418,6 +476,7 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 - **Author:** [Andrii Maslovskyi](https://github.com/amaslovskyi)
 - Built with [Ollama](https://ollama.ai) for local LLM inference
+- Built with [OpenCode](https://opencode.ai) for cloud LLM access (v2.3.1+)
 - Designed for DevOps/SRE/MLOps professionals
 
 ---
@@ -444,4 +503,3 @@ MIT License - See [LICENSE](LICENSE) for details.
 - 📊 [Summary](SUMMARY.md)
 - 🐛 [Report Bug](https://github.com/amaslovskyi/ai-helper/issues)
 - 💡 [Request Feature](https://github.com/amaslovskyi/ai-helper/issues)
-
