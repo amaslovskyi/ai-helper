@@ -25,7 +25,8 @@ import (
 	"github.com/amaslovskyi/ai-helper/pkg/validators/terragrunt"
 )
 
-const version = "2.3.0"
+// version is set at build time via ldflags, defaults to dev if not set
+var version = "dev"
 
 func main() {
 	if len(os.Args) < 2 {

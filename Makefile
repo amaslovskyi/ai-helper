@@ -1,9 +1,12 @@
 .PHONY: build install test clean
 
+# Get version from VERSION file
+VERSION := $(shell cat VERSION 2>/dev/null || echo "dev")
+
 # Build binary
 build:
-	@echo "🔨 Building AI Terminal Helper..."
-	@go build -ldflags="-s -w" -o bin/ai-helper ./cmd/ai-helper
+	@echo "🔨 Building AI Terminal Helper v$(VERSION)..."
+	@go build -ldflags="-s -w -X main.version=$(VERSION)" -o bin/ai-helper ./cmd/ai-helper
 	@echo "✅ Build complete: bin/ai-helper"
 
 # Install to ~/.ai/ (clean install)
@@ -49,11 +52,11 @@ uninstall:
 
 # Build for multiple platforms
 build-all:
-	@echo "🔨 Building for all platforms..."
-	@GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o bin/ai-helper-darwin-amd64 ./cmd/ai-helper
-	@GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o bin/ai-helper-darwin-arm64 ./cmd/ai-helper
-	@GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ai-helper-linux-amd64 ./cmd/ai-helper
-	@GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o bin/ai-helper-linux-arm64 ./cmd/ai-helper
+	@echo "🔨 Building for all platforms v$(VERSION)..."
+	@GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o bin/ai-helper-darwin-amd64 ./cmd/ai-helper
+	@GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o bin/ai-helper-darwin-arm64 ./cmd/ai-helper
+	@GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o bin/ai-helper-linux-amd64 ./cmd/ai-helper
+	@GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o bin/ai-helper-linux-arm64 ./cmd/ai-helper
 	@echo "✅ Build complete for all platforms"
 
 # Check dependencies
