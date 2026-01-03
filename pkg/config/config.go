@@ -13,35 +13,49 @@ type ActivationMode string
 const (
 	// ModeAuto - AI triggers automatically on command failures (default)
 	ModeAuto ActivationMode = "auto"
-	
+
 	// ModeInteractive - Shows interactive menu on failures, user chooses action
 	ModeInteractive ActivationMode = "interactive"
-	
+
 	// ModeManual - AI only activates with explicit commands (ask, analyze)
 	ModeManual ActivationMode = "manual"
-	
+
 	// ModeDisabled - AI is completely disabled
 	ModeDisabled ActivationMode = "disabled"
+)
+
+// LLMProvider defines which LLM provider to use
+type LLMProvider string
+
+const (
+	// ProviderOllama - Local Ollama server (default)
+	ProviderOllama LLMProvider = "ollama"
+
+	// ProviderOpenCode - OpenCode AI coding agent
+	ProviderOpenCode LLMProvider = "opencode"
 )
 
 // Config represents the user's configuration preferences
 type Config struct {
 	// ActivationMode controls how AI assistance is triggered
 	ActivationMode ActivationMode `json:"activation_mode"`
-	
+
 	// AutoExecuteSafe allows automatic execution of safe, read-only commands
 	AutoExecuteSafe bool `json:"auto_execute_safe"`
-	
+
 	// ShowConfidence displays confidence scores with AI suggestions
 	ShowConfidence bool `json:"show_confidence"`
-	
-	// PreferredModel is the default Ollama model to use
+
+	// Provider is the LLM provider to use (ollama or opencode)
+	Provider LLMProvider `json:"provider"`
+
+	// PreferredModel is the default model to use
 	PreferredModel string `json:"preferred_model"`
-	
+
 	// ToolSpecificModes allows per-tool activation overrides
 	// Example: {"kubectl": "interactive", "docker": "auto"}
 	ToolSpecificModes map[string]ActivationMode `json:"tool_specific_modes"`
-	
+
 	// SessionDisabled is used for temporary session-level disabling
 	// This is not saved to disk, only in-memory
 	SessionDisabled bool `json:"-"`
@@ -53,6 +67,7 @@ func DefaultConfig() *Config {
 		ActivationMode:    ModeAuto,
 		AutoExecuteSafe:   false,
 		ShowConfidence:    true,
+		Provider:          ProviderOllama,
 		PreferredModel:    "", // Empty means auto-select
 		ToolSpecificModes: make(map[string]ActivationMode),
 		SessionDisabled:   false,
@@ -66,29 +81,29 @@ func Load(configFile string) (*Config, error) {
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create config directory: %w", err)
 	}
-	
+
 	// If file doesn't exist, return default config
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {
 		return DefaultConfig(), nil
 	}
-	
+
 	// Read and parse config file
 	data, err := os.ReadFile(configFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
-	
+
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		// If config is corrupted, return default
 		return DefaultConfig(), nil
 	}
-	
+
 	// Ensure map is initialized
 	if cfg.ToolSpecificModes == nil {
 		cfg.ToolSpecificModes = make(map[string]ActivationMode)
 	}
-	
+
 	return &cfg, nil
 }
 
@@ -98,7 +113,7 @@ func (c *Config) Save(configFile string) error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal config: %w", err)
 	}
-	
+
 	return os.WriteFile(configFile, data, 0644)
 }
 
@@ -109,12 +124,12 @@ func (c *Config) GetModeForTool(tool string) ActivationMode {
 	if c.SessionDisabled {
 		return ModeDisabled
 	}
-	
+
 	// Check tool-specific override
 	if mode, exists := c.ToolSpecificModes[tool]; exists {
 		return mode
 	}
-	
+
 	// Return global mode
 	return c.ActivationMode
 }
@@ -146,4 +161,3 @@ func ValidateMode(mode string) bool {
 		return false
 	}
 }
-

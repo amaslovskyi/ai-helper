@@ -29,15 +29,15 @@ func NewOllamaClient(baseURL string) *OllamaClient {
 		httpClient: &http.Client{
 			Timeout: 60 * time.Second,
 		},
-		router: NewRouter(),
+		router: NewRouter(ProviderOllama),
 	}
 }
 
 // ollamaRequest represents an Ollama API request
 type ollamaRequest struct {
-	Model  string `json:"model"`
-	Prompt string `json:"prompt"`
-	Stream bool   `json:"stream"`
+	Model   string                 `json:"model"`
+	Prompt  string                 `json:"prompt"`
+	Stream  bool                   `json:"stream"`
 	Options map[string]interface{} `json:"options,omitempty"`
 }
 
@@ -192,6 +192,11 @@ func (c *OllamaClient) IsAvailable(ctx context.Context) error {
 	return nil
 }
 
+// GetProvider returns the provider type
+func (c *OllamaClient) GetProvider() Provider {
+	return ProviderOllama
+}
+
 // ListModels returns available Ollama models
 func (c *OllamaClient) ListModels(ctx context.Context) ([]Model, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL+"/api/tags", nil)
@@ -222,4 +227,3 @@ func (c *OllamaClient) ListModels(ctx context.Context) ([]Model, error) {
 
 	return models, nil
 }
-
