@@ -19,6 +19,22 @@ YELLOW='\033[0;33m'
 RED='\033[0;31m'
 RESET='\033[0m'
 
+# Change to project root directory
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Project root is the parent of scripts directory
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Change to project root
+cd "$PROJECT_ROOT"
+
+# Verify we're in the correct directory
+if [[ ! -f "Makefile" ]] || [[ ! -f "VERSION" ]]; then
+    echo -e "${RED}❌ Error: Must be run from project root${RESET}"
+    echo "Makefile or VERSION file not found in: $PROJECT_ROOT"
+    exit 1
+fi
+
 # Get version
 VERSION=${1:-$(cat VERSION)}
 if [[ -z "$VERSION" ]]; then
