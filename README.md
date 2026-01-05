@@ -85,7 +85,7 @@ make install
 
 # 3. Configure OpenCode provider
 ai-helper config-set provider opencode
-ai-helper config-set model anthropic/claude-sonnet-4-20250514
+ai-helper config-set model opencode/minimax-m2.1-free
 
 # 4. Add to shell
 echo 'source ~/.ai/ai-helper.zsh' >> ~/.zshrc
