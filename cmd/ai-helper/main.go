@@ -164,9 +164,11 @@ func handleAnalyze(client llm.Client, cacheStore *cache.Cache, scanner *security
 		case "skip":
 			return
 		case "disable":
-			cfg.SessionDisabled = true
 			ui.PrintInfo("AI disabled for this session. Restart terminal to re-enable.")
-			return
+			// Exit with special code 7 to signal the shell integration
+			// that the user wants to disable AI for this session.
+			// The shell reads this code and sets a persistent env variable.
+			os.Exit(7)
 		default:
 			return
 		}

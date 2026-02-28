@@ -1,6 +1,19 @@
-# AI Terminal Helper v2.3.1 - Multi-Provider LLM Support 🚀
+# AI Terminal Helper v2.3.3
 
-**Choose your AI provider: Local Ollama or Cloud OpenCode!**
+**Latest: Interactive "Disable AI for session" fix.**
+
+---
+
+## 🎉 What's New in v2.3.3
+
+### Fixed: "Disable AI for session" (option 4) now works
+
+In interactive mode, choosing option 4 ("Disable AI for session") previously did nothing—the menu kept appearing on the next failure. The AI helper runs as a new process on each failed command, so in-memory state was lost.
+
+**Fix:** The binary now exits with a special exit code when you choose disable; the ZSH integration sets a session flag so the menu stays off until you restart the terminal.
+
+- No config or workflow changes required
+- Restart the terminal to re-enable AI
 
 ---
 
