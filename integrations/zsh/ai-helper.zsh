@@ -18,6 +18,10 @@ LAST_EXIT_CODE=0
 AI_LAST_CALL=0
 AI_COOLDOWN=2
 
+# Session-level disable flag (set when user picks "Disable AI for session")
+# Persists until terminal is restarted
+AI_SESSION_DISABLED=0
+
 # Capture command before execution
 preexec() {
   LAST_CMD="$1"
@@ -35,6 +39,11 @@ precmd() {
     return 0
   fi
 
+  # Skip if AI was disabled for this session (user chose option 4)
+  if [[ $AI_SESSION_DISABLED -eq 1 ]]; then
+    return 0
+  fi
+
   # Only trigger AI on actual failures
   if [[ $exit_code -ne 0 ]]; then
     local now=$(date +%s)
@@ -43,7 +52,13 @@ precmd() {
     if [[ $elapsed -ge $AI_COOLDOWN ]]; then
       echo -e "\n\033[1;36m🤖 AI Assistant\033[0m \033[0;33m(exit $exit_code)\033[0m:"
       ai-helper analyze "$LAST_CMD" "$exit_code" "$LAST_OUTPUT"
+      local ai_exit=$?
       AI_LAST_CALL=$now
+
+      # Exit code 7 = user chose "Disable AI for session"
+      if [[ $ai_exit -eq 7 ]]; then
+        AI_SESSION_DISABLED=1
+      fi
     fi
   fi
 }

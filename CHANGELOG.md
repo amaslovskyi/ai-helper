@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.3.3] - 2026-02-28
+
+### Fixed
+
+- **Interactive mode: "Disable AI for session" (option 4) now works** – Choosing option 4 in the error menu previously had no effect because the AI helper runs as a new process on each failure, so in-memory state was lost. The binary now exits with a special exit code (7) when the user chooses disable; the ZSH integration reads this and sets a session-level flag (`AI_SESSION_DISABLED`) so the menu is not shown again until the terminal is restarted.
+  - `cmd/ai-helper/main.go`: exit with code 7 on "disable" action instead of setting in-memory config
+  - `integrations/zsh/ai-helper.zsh`: added `AI_SESSION_DISABLED` check in `precmd()` and set flag when `ai-helper analyze` exits with 7
+
+---
+
 ## [2.3.1] - 2026-01-03
 
 ### 🎯 Major Feature: OpenCode LLM Provider Support
